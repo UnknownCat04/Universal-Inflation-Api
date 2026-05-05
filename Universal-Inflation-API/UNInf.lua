@@ -83,16 +83,17 @@ local desire = false
 local passed = false
 
 function UNInf.checkWhitelist(wlist)
-    passed = true
+    passed = false
     for _, v in pairs(wlist) do
-        desire = true
         if(v:find("-") == 1) then
             v = string.sub(v,2)
-            desire = false
+            if(UNInf.conditional[v] == true) then
+                passed = false
+                break
+            end
         end
-        if(UNInf.conditional[v] ~= desire) then
-            passed = false
-            break
+        if(UNInf.conditional[v] == true) then
+            passed = true
         end
     end
     return passed
