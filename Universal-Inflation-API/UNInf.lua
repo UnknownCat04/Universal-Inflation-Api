@@ -79,7 +79,7 @@ function UNInf.defalte(val)
     end
 end
 
-local desire = false
+
 local passed = false
 
 function UNInf.checkWhitelist(wlist)
@@ -90,6 +90,8 @@ function UNInf.checkWhitelist(wlist)
             if(UNInf.conditional[v] == true) then
                 passed = false
                 break
+            else
+                passed = true
             end
         end
         if(UNInf.conditional[v] == true) then
