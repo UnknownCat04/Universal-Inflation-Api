@@ -1,5 +1,7 @@
 local UNInf = {}
 
+UNInf.VERSION = "1.0"
+
 UNInf.infModes = {}
 UNInf.ticks = {}
 UNInf.renders = {}
@@ -63,19 +65,25 @@ end
 
 function UNInf.setPressure(val)
     if(player:isLoaded()) then
-        UNInf.infModes[UNInf.curSystem].setPressure(val)
+        return UNInf.infModes[UNInf.curSystem].setPressure(val)
+    else
+        return false
     end
 end
 
 function UNInf.inflate(val)
     if(player:isLoaded()) then
-        UNInf.infModes[UNInf.curSystem].adjustPressure(val)
+        return UNInf.infModes[UNInf.curSystem].adjustPressure(val)
+    else
+        return false
     end
 end
 
 function UNInf.defalte(val)
     if(player:isLoaded()) then
-        UNInf.infModes[UNInf.curSystem].adjustPressure(-val)
+        return UNInf.infModes[UNInf.curSystem].adjustPressure(-val)
+    else 
+        return false
     end
 end
 

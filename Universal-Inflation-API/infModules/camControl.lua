@@ -1,13 +1,12 @@
 local cameras = {}
 local UNInf
-local viewer = client:getViewer()
 
 function cameras.patch(core)
     UNInf = core
     UNInf.thirdPersonCam = {}
-    UNInf.thirdPersonCam.__index = UNInf.template
+    UNInf.thirdPersonCam.__index = UNInf.thirdPersonCam
     function UNInf.thirdPersonCam:new(minPull, maxPull, minLift, maxLift, defOffset, minInf, maxInf, conditionals)
-        self = setmetatable({},UNInf.template)
+        self = setmetatable({},UNInf.thirdPersonCam)
         
         --Set all self variables here
 
@@ -67,6 +66,39 @@ function cameras.patch(core)
         end
 
         -- Insert it into UNInf's groups to run in the proper events. Ticks for tick only, Renders for render only, and hybrid for both
+        table.insert(UNInf.renders,self)
+        return self
+    end
+
+    UNInf.firstPersonCam = {}
+    UNInf.firstPersonCam.__index = UNInf.firstPersonCam
+    function UNInf.firstPersonCam:new(cameraBone,defOffset,minInf,maxInf,conditionals)
+        self = setmetatable({},UNInf.firstPersonCam)
+
+        self.cameraBone = cameraBone
+        self.defOffset = defOffset
+        self.minInf = minInf or 0
+        self.maxInf = maxInf or 1
+        self.conditionals = conditionals or {"any"}
+
+
+
+        self.active = false
+
+        function self:render(delta)
+            if(UNInf.pressure / UNInf.maxPressure >= self.minInf and UNInf.pressure / UNInf.maxPressure <= self.maxInf and UNInf.checkWhitelist(self.conditionals) and renderer:isFirstPerson() and (player:getPose() == "STANDING" or player:getPose() == "CROUCHING")) then
+                self.active = true
+                renderer:setOffsetCameraRot(self.cameraBone:getRot():add(self.cameraBone:getAnimRot()))
+                renderer:setOffsetCameraPivot(self.cameraBone:getPos():add(self.cameraBone:getAnimPos()) / 16)
+            else
+                if(self.active) then
+                    self.active = false
+                    renderer:setOffsetCameraPivot(self.defOffset)
+                    renderer:setOffsetCameraRot(nil)
+                end
+            end
+        end
+        
         table.insert(UNInf.renders,self)
         return self
     end
