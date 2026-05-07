@@ -23,11 +23,14 @@ for _, file in pairs(listFiles("./infModules.modes")) do
     --log(i, file)
     loaded = require(file)
     UNInf.infModes[loaded.name] = require(file)
-    if(UNInf.curSystem == nil and loaded.allowed) then
-        UNInf.curSystem = loaded.name
-    end
-    if(loaded.priority < UNInf.infModes[UNInf.curSystem].priority and loaded.allowed) then
-        UNInf.curSystem = loaded.name
+    if(loaded.allowed) then
+        if(UNInf.curSystem == nil) then
+            UNInf.curSystem = loaded.name
+        else
+            if(loaded.priority < UNInf.infModes[UNInf.curSystem].priority and loaded.allowed) then
+                UNInf.curSystem = loaded.name
+            end
+        end
     end
     loaded.rig(UNInf)
 end
@@ -51,8 +54,12 @@ function UNInf.setMode(mode)
             UNInf.conditional[v] = false
         end
     end
-    UNInf.curSystem = mode
-    UNInf.maxPressure = UNInf.infModes[UNInf.curSystem].maxInflation
+    if(UNInf.infModes[mode].allowed) then
+        UNInf.curSystem = mode
+        UNInf.maxPressure = UNInf.infModes[UNInf.curSystem].maxInflation
+    else
+        log("The mode you are attempting to swap to is currently disabled. Please check what the mode requires before trying again")
+    end
 end
 
 function UNInf.getPressure()

@@ -16,7 +16,10 @@ bwbcomp.myConds = {
 "gum",
 "hotair",
 "gumsnare",
-"fizzing"
+"fizzing",
+"bloatrot",
+"waterlogged",
+"smoke"
 }
 
 bwbcomp.infSlot = 1
@@ -63,7 +66,7 @@ function bwbcomp.checkConditions()
             if(effect["name"] == "effect.better_with_blimps.bubbling") then
                 --Bubbling effect
                 specialEfx = specialEfx.."g"
-            goto skip
+                goto skip
             end
             if(effect["name"] == "effect.better_with_blimps.spore_filled") then
                 --Spore effect
