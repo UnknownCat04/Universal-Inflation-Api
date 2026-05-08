@@ -86,15 +86,15 @@ function cameras.patch(core)
         self.active = false
 
         function self:render(delta)
-            if(UNInf.pressure / UNInf.maxPressure >= self.minInf and UNInf.pressure / UNInf.maxPressure <= self.maxInf and UNInf.checkWhitelist(self.conditionals) and renderer:isFirstPerson() and (player:getPose() == "STANDING" or player:getPose() == "CROUCHING") and self.cameraBone:getVisible()) then
+            if(UNInf.checkPressureRange(self.minInf,self.maxInf) and UNInf.checkWhitelist(self.conditionals) and renderer:isFirstPerson()) then
                 self.active = true
-                renderer:setOffsetCameraRot(self.cameraBone:getRot():add(self.cameraBone:getAnimRot()))
-                renderer:setOffsetCameraPivot(self.cameraBone:getPos():add(self.cameraBone:getAnimPos()) / 16)
+                --renderer:setOffsetCameraPivot(self.cameraBone:getPos():add(self.cameraBone:getAnimPos()) / 16)
+                renderer:setOffsetCameraPivot(self.cameraBone:partToWorldMatrix():apply():sub(player:getPos(delta):add(0,player:getEyeHeight(),0)))
             else
                 if(self.active) then
                     self.active = false
                     renderer:setOffsetCameraPivot(self.defOffset)
-                    renderer:setOffsetCameraRot(nil)
+                    --renderer:setOffsetCameraRot(nil)
                 end
             end
         end

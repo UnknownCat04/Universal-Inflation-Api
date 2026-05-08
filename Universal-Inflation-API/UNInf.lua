@@ -116,6 +116,10 @@ function UNInf.checkWhitelist(wlist)
     return passed
 end
 
+function UNInf.checkPressureRange(minInf, maxInf)
+    return UNInf.pressure / UNInf.maxPressure >= minInf and UNInf.pressure / UNInf.maxPressure <= maxInf
+end
+
 -- This is where the events are run. Ticks are run in events.tick, Renders are run in events.render, and hybrid are run in both
 
 function events.tick()

@@ -58,8 +58,8 @@ function animationBloat.patch(core)
                 self.timer = UNInf.clock + self.time
                 self.start = self.infAnim:getTime()
                 self.stop = self.infAnim:getLength() * self.pressure / UNInf.maxPressure
-                self.toggle(UNInf.checkWhitelist(self.conditionals))
             end
+            self.toggle(UNInf.checkWhitelist(self.conditionals))
         end
 
         function self:render(delta)

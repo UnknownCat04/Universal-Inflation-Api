@@ -21,10 +21,12 @@ end
 
 function hunger.setPressure(val)
     log("Pressure cannot be set in this mode")
+    return false
 end
 
 function hunger.adjustPressure(val)
     log("Pressure cannot be adjusted in this mode")
+    return false
 end
 
 

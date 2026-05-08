@@ -17,10 +17,12 @@ end
 
 function manual.setPressure(val)
     manual.pressure = math.clamp(val,0,manual.maxInflation)
+    return manual.pressure
 end
 
 function manual.adjustPressure(val)
     manual.pressure = math.clamp(manual.pressure + val,0,manual.maxInflation)
+    return manual.pressure
 end
 
 
