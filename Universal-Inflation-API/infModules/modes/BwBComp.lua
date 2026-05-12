@@ -4,6 +4,7 @@ local bwbcomp = {}
 local viewer = client:getViewer()
 bwbcomp.priority = 0
 bwbcomp.maxInflation = 20
+bwbcomp.pressure = 0
 bwbcomp.name = "BwBComp"
 bwbcomp.allowed = client:isModLoaded("better_with_blimps")
 
@@ -173,11 +174,13 @@ end
 
 
 function bwbcomp.setPressure(val)
-    log("Pressure cannot be set in this mode")
+    UNInf.annoyLog("Pressure cannot be set in bwbcomp mode","bwbset")
+    return false
 end
 
 function bwbcomp.adjustPressure(val)
-    log("Pressure cannot be adjusted in this mode")
+    UNInf.annoyLog("Pressure cannot be adjusted in bwbcomp mode","bwbadj")
+    return false
 end
 
 --UNInf.infSystems[bwbcomp.name] = bwbcomp

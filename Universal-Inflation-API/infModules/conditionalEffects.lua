@@ -27,6 +27,28 @@ function CondEffector.patch(core)
         self.id = condtional..CondEffector.ids
         CondEffector.ids = CondEffector.ids + 1
 
+        assert(type(self.condtional) == "string", "Your conditional Effector was given something other than a string. It can only track a single conditional at a time")
+        if(self.minColor ~= nil and self.maxColor ~= nil) then
+            assert(type(self.minColor) == "Vector3", "Your minimum color is not a valid Vector3. Please input a Vector3, with the colors being in R G B order!")
+            assert(type(self.maxColor) == "Vector3", "Your minimum color is not a valid Vector3. Please input a Vector3, with the colors being in R G B order!")
+        end
+        if(self.newTexture ~= nil) then
+            assert()
+        end
+        if(self.textureTarget ~= nil) then
+            if(type(self.textureTarget) == "ModelPart") then
+                self.textureTarget = {self.textureTarget}
+            end
+            assert(type(self.textureTarget) == "table", "Your texture target is not set properly. Please set it to a model part, or a table of model parts")
+            assert(type(self.origTexture) == "Texture", "Your original texture is not set properly. It must be a texture you wish to use when you're not under the tracked effect")
+            assert(type(self.newTexture) == "Texture", "Your new texture is not set properly. It must be a texture you wish to use when you're under the tracked effect")
+        end
+        if(self.animation ~= nil) then
+            assert(type(self.animation) == "Animation", "Your inflation animation is not set properly. Please set it to the animation path in your model")
+        end
+        assert(type(self.minInf) == "number", "The status effector's minimum inflation value is not set to a number. Please set it to a value between 0 and 1.")
+        assert(type(self.maxInf) == "number", "The status effector's maximum inflation value is not set to a number. Please set it to a value between 0 and 1.")
+
         self.active = false
 
         function self:tick()
@@ -38,9 +60,6 @@ function CondEffector.patch(core)
                         for i, part in pairs(self.textureTarget) do
                             part:setPrimaryTexture("Custom", self.newTexture)
                         end
-                    end
-                    if(self.animation ~= nil) then
-                        self.animation:play()
                     end
                 end
                 if(self.minColor ~= nil and self.maxColor ~= nil) then
@@ -54,10 +73,10 @@ function CondEffector.patch(core)
                             part:setPrimaryTexture("Custom", self.origTexture)
                         end
                     end
-                    if(self.animation ~= nil) then
-                        self.animation:stop()
-                    end
                 end
+            end
+            if(self.animation ~= nil) then
+                self.animation:setPlaying(self.active)
             end
         end
 

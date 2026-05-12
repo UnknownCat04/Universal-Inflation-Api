@@ -11,17 +11,18 @@ UNInf.maxPressure = 20
 UNInf.curSystem = nil
 UNInf.conditional = {}
 UNInf.conditional["any"] = true
+UNInf.retportLogs = true
 
 UNInf.clock = 0
 
 --log(listFiles(UNInf.path))
-
 
 -- Here's where the inflation system is loaded and selected. It defaults to the system in the list with the lowest priority that is allowed
 
 for _, file in pairs(listFiles("./infModules.modes")) do
     --log(i, file)
     loaded = require(file)
+    assert(UNInf.infModes[loaded.name] == nil, "You have a duplicate mode in your modes folder. Please remove it")
     UNInf.infModes[loaded.name] = require(file)
     if(loaded.allowed) then
         if(UNInf.curSystem == nil) then
@@ -48,7 +49,12 @@ loaded = nil
 -- These are the associated commands for controlling and engaging with pressure
 
 function UNInf.setMode(mode)
-    assert(UNInf.infModes[mode] ~= nil,"You set the mode to an invalid entry. Please log UNInf.infModes to see what modes you currently have available")
+    if(UNInf.infModes[mode] == nil) then
+        --assert(UNInf.infModes[mode] ~= nil,"You set the mode to an invalid entry. Please log UNInf.infModes to see what modes you currently have available")
+        
+        UNInf.annoyLog("You've tried to set the mode to an invalid entry: "..mode.. " Please log UNInf.infModes to see what modes you currently have available")
+        return
+    end
     if(UNInf.infModes[UNInf.curSystem].myConds ~= nil) then
         for _, v in pairs(UNInf.infModes[UNInf.curSystem].myConds) do
             UNInf.conditional[v] = false
@@ -56,9 +62,10 @@ function UNInf.setMode(mode)
     end
     if(UNInf.infModes[mode].allowed) then
         UNInf.curSystem = mode
+        UNInf.infModes[UNInf.curSystem].pressure = (UNInf.pressure / UNInf.maxPressure) * UNInf.infModes[UNInf.curSystem].maxInflation
         UNInf.maxPressure = UNInf.infModes[UNInf.curSystem].maxInflation
     else
-        log("The mode you are attempting to swap to is currently disabled. Please check what the mode requires before trying again")
+        UNInf.annoyLog("The mode you are attempting to swap to is currently disabled. Please check what the mode requires before trying again","invmode")
     end
 end
 
@@ -71,27 +78,18 @@ function UNInf.getPressure()
 end
 
 function UNInf.setPressure(val)
-    if(player:isLoaded()) then
-        return UNInf.infModes[UNInf.curSystem].setPressure(val)
-    else
-        return false
-    end
+    UNInf.pressure = UNInf.infModes[UNInf.curSystem].setPressure(val)
+    return UNInf.pressure
 end
 
 function UNInf.inflate(val)
-    if(player:isLoaded()) then
-        return UNInf.infModes[UNInf.curSystem].adjustPressure(val)
-    else
-        return false
-    end
+    UNInf.pressure = UNInf.infModes[UNInf.curSystem].adjustPressure(val)
+    return UNInf.pressure
 end
 
-function UNInf.defalte(val)
-    if(player:isLoaded()) then
-        return UNInf.infModes[UNInf.curSystem].adjustPressure(-val)
-    else 
-        return false
-    end
+function UNInf.deflate(val)
+    UNInf.pressure = UNInf.infModes[UNInf.curSystem].adjustPressure(-val)
+    return UNInf.pressure
 end
 
 
@@ -120,10 +118,31 @@ function UNInf.checkPressureRange(minInf, maxInf)
     return UNInf.pressure / UNInf.maxPressure >= minInf and UNInf.pressure / UNInf.maxPressure <= maxInf
 end
 
+UNInf.sentMsg = {}
+function UNInf.annoyLog(msg,id)
+    if(UNInf.retportLogs == false) then return end
+    if(id == nil) then
+        id = "inf"
+    end
+    if(UNInf.sentMsg[id] ~= true) then
+        newMess  = {
+             "",
+            {text = "Warning: ", color = "#a30000"},
+            {text = msg, color = "#FF5555"},
+            {text = "\n" }
+        }
+        UNInf.sentMsg[id] = true
+        printJson(toJson(newMess))
+        newMess = nil
+    end
+    UNInf.sentMsg["inf"] = false
+end
+
 -- This is where the events are run. Ticks are run in events.tick, Renders are run in events.render, and hybrid are run in both
 
 function events.tick()
     UNInf.pressure = UNInf.getPressure()
+    --log(UNInf.pressure)
     for _, v in pairs(UNInf.ticks) do
         v:tick()
     end

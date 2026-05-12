@@ -20,12 +20,12 @@ function hunger.checkPressure()
 end
 
 function hunger.setPressure(val)
-    log("Pressure cannot be set in this mode")
+    UNInf.annoyLog("Pressure cannot be set in Saturation mode","satset")
     return false
 end
 
 function hunger.adjustPressure(val)
-    log("Pressure cannot be adjusted in this mode")
+    UNInf.annoyLog("Pressure cannot be adjusted in Saturation mode","satadj")
     return false
 end
 
