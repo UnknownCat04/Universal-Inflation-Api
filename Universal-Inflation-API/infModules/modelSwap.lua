@@ -1,10 +1,20 @@
 local modelSwap = {}
+---@class UNInf
+
 local UNInf
 
 function modelSwap.patch(core)
     UNInf = core
     UNInf.modelSwapInflation = {}
     UNInf.modelSwapInflation.__index = UNInf.modelSwapInflation
+    ---Toggle models in response to how inflated you are
+    ---@param newModel ModelPart [REQUIRED!] What model becomes visible when the module is activated
+    ---@param origModel ModelPart [REQUIRED!] What model becomes hidden when the module is activated
+    ---@param infAnim Animation|nil [nil] Plays when the model is toggled
+    ---@param minInf number|nil [0.01] How inflated you must be for this module to be activated
+    ---@param maxInf number|nil [1] How inflated you can be before this module is ignored
+    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
+    ---@return table self Returns itself for on the fly modification
     function UNInf.modelSwapInflation:new(newModel, origModel, infAnim, minInf, maxInf, conditionals)
         self = setmetatable({},UNInf.modelSwap)
         
@@ -31,10 +41,7 @@ function modelSwap.patch(core)
 
         function self:tick()
             --Tick behaivors go here
-            self.active = UNInf.pressure / UNInf.maxPressure >= self.minInf and UNInf.pressure / UNInf.maxPressure <= self.maxInf
-            if(not UNInf.checkWhitelist(self.conditionals)) then
-                self.active = false
-            end
+            self.active = UNInf.checkPressureRange(self.minInf,self.maxInf) and UNInf.checkWhitelist(self.conditionals)
             self.newModel:setVisible(self.active)
             self.origModel:setVisible(not self.active)
             if(self.wasActive ~= self.active and self.infAnim ~= nil) then

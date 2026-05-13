@@ -1,4 +1,5 @@
 local deflateAnim = {}
+---@class UNInf
 local UNInf
 
 function deflateAnim.patch(core)
@@ -9,7 +10,14 @@ function deflateAnim.patch(core)
 
     UNInf.deflateAnimation = {}
     UNInf.deflateAnimation.__index = UNInf.deflateAnimation
-    function UNInf.deflateAnimation:new(defAnim,chargeAnim,chargeCount,chargedDeflate,conditionals)
+    ---Plays a deflation animation whenever you call it, or in the case of BwB deflate via its keybind
+    ---@param defAnim Animation [REQUIRED!] What should play when you run this module
+    ---@param chargeAnim Animation|nil [nil] What should play while you are charging this module
+    ---@param chargeTicks number|nil [30] How many ticks will pass before a charged deflation is run
+    ---@param chargedDeflate number|nil [0.25] How much should you deflate by when a fully charged deflation occurs. Percentage
+    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
+    ---@return table self Returns itself for calling and on the fly modification
+    function UNInf.deflateAnimation:new(defAnim,chargeAnim,chargeTicks,chargedDeflate,conditionals)
         self = setmetatable({},UNInf.deflateAnimation)
         
         --Set all self variables here
@@ -21,7 +29,7 @@ function deflateAnim.patch(core)
         --log(self.ID,UNInf.pingableDefAnims[self.ID],self.defAnim,UNInf.pingableDefAnims)
 
         self.chargeAnim = chargeAnim
-        self.chargeCount = chargeCount or 30
+        self.chargeCount = chargeTicks or 30
         self.chargedDeflate = chargedDeflate or 0.25
         self.conditionals = conditionals or {"any"}
 

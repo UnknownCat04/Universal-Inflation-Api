@@ -1,6 +1,7 @@
+---@class UNInf
 local UNInf = {}
 
-UNInf.VERSION = "1.0"
+---@version 1.0.0
 
 UNInf.infModes = {}
 UNInf.ticks = {}
@@ -48,6 +49,8 @@ loaded = nil
 
 -- These are the associated commands for controlling and engaging with pressure
 
+---Swaps the current mode to a new one, transfering pressures over appropriately
+---@param mode string The name of the new mode you want to use
 function UNInf.setMode(mode)
     if(UNInf.infModes[mode] == nil) then
         --assert(UNInf.infModes[mode] ~= nil,"You set the mode to an invalid entry. Please log UNInf.infModes to see what modes you currently have available")
@@ -68,7 +71,8 @@ function UNInf.setMode(mode)
         UNInf.annoyLog("The mode you are attempting to swap to is currently disabled. Please check what the mode requires before trying again","invmode")
     end
 end
-
+---Get the current pressure you're at
+---@return number
 function UNInf.getPressure()
     if(player:isLoaded()) then
         return UNInf.infModes[UNInf.curSystem].checkPressure()
@@ -76,17 +80,23 @@ function UNInf.getPressure()
         return 0
     end
 end
-
+---Set the current pressure to the provided value, if allowed
+---@param val integer The desired pressure given
+---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.setPressure(val)
     UNInf.pressure = UNInf.infModes[UNInf.curSystem].setPressure(val)
     return UNInf.pressure
 end
-
+---Raise the current pressure by the provided value, if allowed
+---@param val integer The desired inflation given
+---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.inflate(val)
     UNInf.pressure = UNInf.infModes[UNInf.curSystem].adjustPressure(val)
     return UNInf.pressure
 end
-
+---Lower the current pressure by the provided value, if allowed
+---@param val integer The desired deflation given
+---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.deflate(val)
     UNInf.pressure = UNInf.infModes[UNInf.curSystem].adjustPressure(-val)
     return UNInf.pressure
@@ -94,7 +104,9 @@ end
 
 
 local passed = false
-
+---Checks if the passed table string passes the white list
+---@param wlist table The whitelist you wish to test. Should be a table of strings
+---@return boolean result The test result
 function UNInf.checkWhitelist(wlist)
     passed = false
     for _, v in pairs(wlist) do
@@ -113,12 +125,18 @@ function UNInf.checkWhitelist(wlist)
     end
     return passed
 end
-
+---Checks to see if you are within a certain range of inflation
+---@param minInf number The minimum inflation you want to be utilized in this check
+---@param maxInf number The maximum inflation you want to be utilized in this check
+---@return boolean Whether you passed or failed the check
 function UNInf.checkPressureRange(minInf, maxInf)
     return UNInf.pressure / UNInf.maxPressure >= minInf and UNInf.pressure / UNInf.maxPressure <= maxInf
 end
 
 UNInf.sentMsg = {}
+---Sends a message to the ingame chat, to inform players of when things are going wrong. Pass an ID to make it so the message only sends once per load
+---@param msg string The message you wish to use
+---@fun id string The ID of the message. Pass this to ensure the message can only be sent once
 function UNInf.annoyLog(msg,id)
     if(UNInf.retportLogs == false) then return end
     if(id == nil) then

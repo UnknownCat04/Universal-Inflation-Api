@@ -1,10 +1,14 @@
 local template = {}
+---@class UNInf
 local UNInf
 
 function template.patch(core)
     UNInf = core
     UNInf.template = {}
     UNInf.template.__index = UNInf.template
+    ---Template Module. Put description here
+    ---@param val any What variables do you need
+    ---@return table self Returns itself for on the fly modification
     function UNInf.template:new(val)
         self = setmetatable({},UNInf.template)
         

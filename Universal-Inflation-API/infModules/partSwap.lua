@@ -1,10 +1,18 @@
 local partSwap = {}
+---@class UNInf
 local UNInf
 
 function partSwap.patch(core)
     UNInf = core
     UNInf.modelpartInflation = {}
     UNInf.modelpartInflation.__index = UNInf.modelpartInflation
+    ---Toggle modelparts on or off based off of your inflation level
+    ---@param parts table [REQUIRED!] What model parts are toggled by this module
+    ---@param infAnim Animation|nil [nil] Plays when the model is toggled
+    ---@param minInf number How inflated you must be for this module to be activated
+    ---@param maxInf number [1] How inflated you can be before this module is ignored
+    ---@param conditionals table [{"any"}] Toggles the module in response to condtionals
+    ---@return table self Returns itself for on the fly modification
     function UNInf.modelpartInflation:new(parts,infAnim, minInf, maxInf, conditionals)
         self = setmetatable({},UNInf.modelpartInflation)
         

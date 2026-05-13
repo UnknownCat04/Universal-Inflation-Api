@@ -1,10 +1,21 @@
 local cameras = {}
+---@class UNInf
 local UNInf
 
 function cameras.patch(core)
     UNInf = core
     UNInf.thirdPersonCam = {}
     UNInf.thirdPersonCam.__index = UNInf.thirdPersonCam
+    ---Contols your third person camera based off of your inflation
+    ---@param minPull number|nil [0] How much the camera is pulled back by this module at the minimum inflation
+    ---@param maxPull number|nil [-3] How much the camera is pulled back by this module at the maximum inflation
+    ---@param minLift number|nil [0] How much the camera is raised by this module at the minimum inflation
+    ---@param maxLift number|nil [2] much the camera is raised by this module at the maximum inflation
+    ---@param defOffset Vector3|nil [nil] What the camera returns to when this module is disabled. Nil is the default minecraft perspective
+    ---@param minInf number|nil [0] How inflated you must be for this module to be activated
+    ---@param maxInf number|nil [1] How inflated you can be before this module is ignored
+    ---@param conditionals string|nil [{"any"}] Toggles the module in response to condtionals
+    ---@return table self Returns itself for on the fly modification
     function UNInf.thirdPersonCam:new(minPull, maxPull, minLift, maxLift, defOffset, minInf, maxInf, conditionals)
         self = setmetatable({},UNInf.thirdPersonCam)
         
@@ -72,6 +83,13 @@ function cameras.patch(core)
 
     UNInf.firstPersonCam = {}
     UNInf.firstPersonCam.__index = UNInf.firstPersonCam
+    ---Sets up a bone to move the first person camera in response to inflation
+    ---@param cameraBone ModelPart [REQUIRED!] The bone that the camera actually links to
+    ---@param defOffset Vector3|nil [nil] What the camera returns to when this module is disabled. Nil is the default minecraft perspective
+    ---@param minInf number|nil [0] How inflated you must be for this module to be activated
+    ---@param maxInf number|nil [1] How inflated you can be before this module is ignored
+    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
+    ---@return table self Returns itself for on the fly modification
     function UNInf.firstPersonCam:new(cameraBone,defOffset,minInf,maxInf,conditionals)
         self = setmetatable({},UNInf.firstPersonCam)
 
