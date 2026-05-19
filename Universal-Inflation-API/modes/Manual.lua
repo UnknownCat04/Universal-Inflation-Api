@@ -1,14 +1,14 @@
 local UNInf
 
 local manual = {}
-manual.priority = 1000000
+manual.priority = 10
 manual.maxInflation = 20
 manual.name = "Manual"
 manual.allowed = true
 manual.pressure = 0
 manual.manualAllowed = true
 
-function manual.rig(core)
+function manual.patch(core)
     UNInf = core
 end
 
@@ -26,8 +26,5 @@ function manual.adjustPressure(val)
     return manual.pressure
 end
 
-
---UNInf.infSystems[manual.name] = manual
---UNInf.systemSelectUpd(manual)
 
 return manual

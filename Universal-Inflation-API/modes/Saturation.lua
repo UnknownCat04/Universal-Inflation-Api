@@ -8,7 +8,7 @@ hunger.allowed = true
 hunger.pressure = 0
 hunger.manualAllowed = false
 
-function hunger.rig(core)
+function hunger.patch(core)
     UNInf = core
 end
 
@@ -29,9 +29,5 @@ function hunger.adjustPressure(val)
     UNInf.annoyLog("Pressure cannot be adjusted in Saturation mode","satadj")
     return false
 end
-
-
---UNInf.infSystems[hunger.name] = hunger
---UNInf.systemSelectUpd(hunger)
 
 return hunger

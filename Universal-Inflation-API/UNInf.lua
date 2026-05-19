@@ -35,7 +35,7 @@ for _, file in pairs(listFiles("./modes")) do
             end
         end
     end
-    loaded.rig(UNInf)
+    loaded.patch(UNInf)
 end
 UNInf.maxPressure = UNInf.infModes[UNInf.curSystem].maxInflation
 

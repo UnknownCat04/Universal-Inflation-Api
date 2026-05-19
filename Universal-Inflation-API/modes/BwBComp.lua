@@ -27,7 +27,7 @@ bwbcomp.myConds = {
 bwbcomp.infSlot = 1
 bwbcomp.infVal = nil
 
-function bwbcomp.rig(core)
+function bwbcomp.patch(core)
     UNInf = core
     UNInf.conditional["inflating"] = false
     UNInf.conditional["ballooned"] = false
@@ -188,8 +188,5 @@ function bwbcomp.adjustPressure(val)
     UNInf.annoyLog("Pressure cannot be adjusted in bwbcomp mode","bwbadj")
     return false
 end
-
---UNInf.infSystems[bwbcomp.name] = bwbcomp
---UNInf.systemSelectUpd(bwbcomp)
 
 return bwbcomp
