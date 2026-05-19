@@ -6,6 +6,7 @@ hunger.maxInflation = 20
 hunger.name = "Saturation"
 hunger.allowed = true
 hunger.pressure = 0
+hunger.manualAllowed = false
 
 function hunger.rig(core)
     UNInf = core

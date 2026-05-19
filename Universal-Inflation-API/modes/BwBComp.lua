@@ -7,6 +7,7 @@ bwbcomp.maxInflation = 20
 bwbcomp.pressure = 0
 bwbcomp.name = "BwBComp"
 bwbcomp.allowed = client:isModLoaded("better_with_blimps")
+bwbcomp.manualAllowed = false
 
 bwbcomp.myConds = {
 "inflating",
@@ -141,6 +142,11 @@ function bwbcomp.checkPressure()
     bwbcomp.infVal = nil
 
     if(player:isLoaded() and player:isAlive()) then
+        --Afterwards, we make an anti break check to ensure that the bookmarked location is not invalid, and if it is we reset the bookmark to prevent an infinite break and skip this check entirely
+        if(player:getNbt()["Attributes"][bwbcomp.infSlot] == nil) then
+            bwbcomp.infSlot = 1
+            return 0
+        end
         --Then we check the bookmarked location for the value. If it is right we use that
         if(player:getNbt()["Attributes"][bwbcomp.infSlot]["Name"] == "better_with_blimps:inflated_attribute") then
             bwbcomp.infVal = player:getNbt()["Attributes"][bwbcomp.infSlot]["Base"]

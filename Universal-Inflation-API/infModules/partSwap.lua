@@ -9,9 +9,9 @@ function partSwap.patch(core)
     ---Toggle modelparts on or off based off of your inflation level
     ---@param parts table [REQUIRED!] What model parts are toggled by this module
     ---@param infAnim Animation|nil [nil] Plays when the model is toggled
-    ---@param minInf number How inflated you must be for this module to be activated
-    ---@param maxInf number [1] How inflated you can be before this module is ignored
-    ---@param conditionals table [{"any"}] Toggles the module in response to condtionals
+    ---@param minInf number|nil [0.01] How inflated you must be for this module to be activated
+    ---@param maxInf number|nil [1] How inflated you can be before this module is ignored
+    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
     ---@return table self Returns itself for on the fly modification
     function UNInf.modelpartInflation:new(parts,infAnim, minInf, maxInf, conditionals)
         self = setmetatable({},UNInf.modelpartInflation)

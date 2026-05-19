@@ -89,20 +89,6 @@ function animationBloat.patch(core)
 
 end
 
-function events.entity_init()
-    if(autoBloat) then
-        for i, v in pairs(models:getChildren()) do
-        modelName = v:getName()
-        anims = animations[modelName] or {}
-        for _, y in pairs(anims) do
-            if(string.sub(y:getName(), 1, 5) == "bloat") then
-                UNInf.animbloat:new(y)
-            end
-        end
-    end
-    modelName = nil
-    anims = nil
-  end
-end
+
 
 return animationBloat

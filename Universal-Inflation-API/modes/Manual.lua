@@ -6,6 +6,7 @@ manual.maxInflation = 20
 manual.name = "Manual"
 manual.allowed = true
 manual.pressure = 0
+manual.manualAllowed = true
 
 function manual.rig(core)
     UNInf = core

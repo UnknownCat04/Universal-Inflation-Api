@@ -10,6 +10,7 @@ UNInf.hybrid = {}
 UNInf.pressure = 0
 UNInf.maxPressure = 20
 UNInf.curSystem = nil
+UNInf.manualAllowed = false
 UNInf.conditional = {}
 UNInf.conditional["any"] = true
 UNInf.retportLogs = true
@@ -20,7 +21,7 @@ UNInf.clock = 0
 
 -- Here's where the inflation system is loaded and selected. It defaults to the system in the list with the lowest priority that is allowed
 
-for _, file in pairs(listFiles("./infModules.modes")) do
+for _, file in pairs(listFiles("./modes")) do
     --log(i, file)
     loaded = require(file)
     assert(UNInf.infModes[loaded.name] == nil, "You have a duplicate mode in your modes folder. Please remove it")
@@ -65,6 +66,7 @@ function UNInf.setMode(mode)
     end
     if(UNInf.infModes[mode].allowed) then
         UNInf.curSystem = mode
+        UNInf.manualAllowed = UNInf.infModes[UNInf.curSystem].manualAllowed
         UNInf.infModes[UNInf.curSystem].pressure = (UNInf.pressure / UNInf.maxPressure) * UNInf.infModes[UNInf.curSystem].maxInflation
         UNInf.maxPressure = UNInf.infModes[UNInf.curSystem].maxInflation
     else
@@ -84,31 +86,30 @@ end
 ---@param val integer The desired pressure given
 ---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.setPressure(val)
-    UNInf.pressure = UNInf.infModes[UNInf.curSystem].setPressure(val)
-    return UNInf.pressure
+    return UNInf.infModes[UNInf.curSystem].setPressure(val)
 end
 ---Raise the current pressure by the provided value, if allowed
 ---@param val integer The desired inflation given
 ---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.inflate(val)
-    UNInf.pressure = UNInf.infModes[UNInf.curSystem].adjustPressure(val)
-    return UNInf.pressure
+    return UNInf.infModes[UNInf.curSystem].adjustPressure(val)
 end
 ---Lower the current pressure by the provided value, if allowed
 ---@param val integer The desired deflation given
 ---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.deflate(val)
-    UNInf.pressure = UNInf.infModes[UNInf.curSystem].adjustPressure(-val)
-    return UNInf.pressure
+    return UNInf.infModes[UNInf.curSystem].adjustPressure(-val)
 end
 
 
 local passed = false
+local checks = 0
 ---Checks if the passed table string passes the white list
 ---@param wlist table The whitelist you wish to test. Should be a table of strings
 ---@return boolean result The test result
 function UNInf.checkWhitelist(wlist)
     passed = false
+    checks = 0
     for _, v in pairs(wlist) do
         if(v:find("-") == 1) then
             v = string.sub(v,2)
@@ -116,12 +117,15 @@ function UNInf.checkWhitelist(wlist)
                 passed = false
                 break
             else
-                passed = true
+                checks = checks + 1
             end
         end
         if(UNInf.conditional[v] == true) then
             passed = true
         end
+    end
+    if(checks == #wlist) then
+        passed = true
     end
     return passed
 end
@@ -136,7 +140,7 @@ end
 UNInf.sentMsg = {}
 ---Sends a message to the ingame chat, to inform players of when things are going wrong. Pass an ID to make it so the message only sends once per load
 ---@param msg string The message you wish to use
----@fun id string The ID of the message. Pass this to ensure the message can only be sent once
+---@param id string|nil string The ID of the message. Pass this to ensure the message can only be sent once
 function UNInf.annoyLog(msg,id)
     if(UNInf.retportLogs == false) then return end
     if(id == nil) then
