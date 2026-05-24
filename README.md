@@ -17,4 +17,4 @@ local UNInf = require("Universal-Inflation-API.UNInf")
 
 Once this is done, the API will be able to be called from within that script, and you can call new modules in to customize your inflation appearance. Refer to the [wiki](https://github.com/UnknownCat04/Universal-Inflation-Api/wiki) for more information there!
 
-Attributions can be located [here](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main.Credits.md)
+Attributions can be located [here](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main/Credits.md)
