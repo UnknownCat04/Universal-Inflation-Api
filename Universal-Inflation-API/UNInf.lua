@@ -1,7 +1,7 @@
 ---@class UNInf
 local UNInf = {}
 
----@version 1.0.0
+---@version Pre-release
 
 UNInf.infModes = {}
 UNInf.ticks = {}
@@ -13,7 +13,7 @@ UNInf.curSystem = nil
 UNInf.manualAllowed = false
 UNInf.conditional = {}
 UNInf.conditional["any"] = true
-UNInf.retportLogs = true
+UNInf.reportLogs = true
 
 UNInf.clock = 0
 
@@ -142,7 +142,7 @@ UNInf.sentMsg = {}
 ---@param msg string The message you wish to use
 ---@param id string|nil string The ID of the message. Pass this to ensure the message can only be sent once
 function UNInf.annoyLog(msg,id)
-    if(UNInf.retportLogs == false) then return end
+    if(UNInf.reportLogs == false) then return end
     if(id == nil) then
         id = "inf"
     end

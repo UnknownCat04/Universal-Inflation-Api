@@ -1,5 +1,16 @@
-# Universal-Inflation-Api
+# 🎇<ins>Universal inflation API</ins>
+---
+An API for [Figura](https://github.com/FiguraMC/Figura) based player model inflation, intending to simplify making your avatars compatible with inflation / growth mods such as:
 
-A universal inflation api for figura. This package is designed to be easily patched, modified, and resized to suit your speciifc model making needs, without tacking on extra modules you don't want to use. It is open ended in design, meant to enable one model to made compatible with multiple different size based mods with minimal modification, and no version juggling!
+- Better with Blimps 🎈
+- Mobs are Balloons 📍
+- Just Another Bite 🍰
 
-As you probably noticed... this read me is very much a WIP. Gonna be asking for help getting it written into a more robust and effective document
+Additionally it can be configured to have more modes, allowing you to customize when and how your avatar inflates, and even set up ways to blow up in vanilla Minecraft. It also allows your model to compatible with multiple mods at the same time, minimizing how much version juggling and coding you have to do.
+
+To activate and configure your API, first add this line of code to your main script:
+```
+local UNInf = require("Universal-Inflation-API.UNInf")
+```
+
+Once this is done, the API will be able to be called from within that script, and you can call new modules in to customize your inflation appearance. Refer to the [wiki](https://github.com/UnknownCat04/Universal-Inflation-Api/wiki) for more information there!
