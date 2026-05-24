@@ -1,5 +1,5 @@
 # 🎇<ins>Universal inflation API</ins>
----
+
 An API for [Figura](https://github.com/FiguraMC/Figura) based player model inflation, intending to simplify making your avatars compatible with inflation / growth mods such as:
 
 - Better with Blimps 🎈
@@ -7,6 +7,8 @@ An API for [Figura](https://github.com/FiguraMC/Figura) based player model infla
 - Just Another Bite 🍰
 
 Additionally it can be configured to have more modes, allowing you to customize when and how your avatar inflates, and even set up ways to blow up in vanilla Minecraft. It also allows your model to compatible with multiple mods at the same time, minimizing how much version juggling and coding you have to do.
+
+---
 
 To activate and configure your API, first add this line of code to your main script:
 ```
