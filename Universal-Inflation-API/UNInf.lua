@@ -6,6 +6,7 @@ local UNInf = {}
 UNInf.infModes = {}
 UNInf.ticks = {}
 UNInf.renders = {}
+UNInf.postWorldRenders = {}
 UNInf.hybrid = {}
 UNInf.pressure = 0
 UNInf.maxPressure = 20
@@ -180,6 +181,12 @@ function events.render(delta,context,matrix)
     end
     for _, v in pairs(UNInf.hybrid) do
         v:render(delta,context,matrix)
+    end
+end
+
+function events.post_world_render(delta)
+    for _, v in pairs(UNInf.postWorldRenders) do
+        v:post_world_render(delta)
     end
 end
 

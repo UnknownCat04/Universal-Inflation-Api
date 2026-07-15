@@ -1,4 +1,5 @@
 local animationBloat = {}
+---@class UNInf
 local UNInf
 
 --CONFIGURATION VALUES!
@@ -11,8 +12,8 @@ function animationBloat.patch(core)
     UNInf.animbloat.__index = UNInf.animbloat
     ---Uses an animation to scale your model as you inflate
     ---@param infAnim Animation [REQUIRED!] What plays to represent your inflation progress
-    ---@param time number|nil [7] How many ticks does it take for your inflation to fully update
-    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
+    ---@param time number? [7] How many ticks does it take for your inflation to fully update
+    ---@param conditionals table? [{"any"}] Toggles the module in response to condtionals
     ---@return table self Returns itself for on the fly modification
     function UNInf.animbloat:new(infAnim, time, conditionals)
         self = setmetatable({},UNInf.animbloat)

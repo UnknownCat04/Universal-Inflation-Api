@@ -17,7 +17,7 @@ function template.patch(core)
         self.val = val
 
         function self:tick()
-            --Tick behaivors go here
+            --Tick behaviors go here
 
         end
 

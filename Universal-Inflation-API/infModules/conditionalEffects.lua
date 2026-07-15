@@ -12,14 +12,14 @@ function CondEffector.patch(core)
     UNInf.ConditionalEffector.__index = UNInf.ConditionalEffector
     ---Preforms some premade reactions to conditionals being turned on or off
     ---@param condtional string [REQUIRED!] What conditional actually triggers this module
-    ---@param minColor number|nil [nil] What color is initially applied when the effector is activated
-    ---@param maxColor number|nil [nil] What color is applied when the effector is at max inflation
-    ---@param newTexture Texture|nil [nil] What texture is applied when the effector is activated
-    ---@param origTexture Texture|nil [nil] What texture is applied when the effector is deactivated
-    ---@param textureTarget Texture|nil [nil] What model parts are the textures applied to
-    ---@param animation Animation|nil [nil] What animation is played when this module is activated
-    ---@param minInf number|nil [0] What percentage of inflation is required for this module to activate
-    ---@param maxInf number|nil [1] What percentage of inflation before the module is deactivated
+    ---@param minColor number? [nil] What color is initially applied when the effector is activated
+    ---@param maxColor number? [nil] What color is applied when the effector is at max inflation
+    ---@param newTexture Texture? [nil] What texture is applied when the effector is activated
+    ---@param origTexture Texture? [nil] What texture is applied when the effector is deactivated
+    ---@param textureTarget Texture? [nil] What model parts are the textures applied to
+    ---@param animation Animation? [nil] What animation is played when this module is activated
+    ---@param minInf number? [0] What percentage of inflation is required for this module to activate
+    ---@param maxInf number? [1] What percentage of inflation before the module is deactivated
     ---@return table self Returns itself for on the fly modification
     function UNInf.ConditionalEffector:new(condtional, minColor, maxColor, newTexture, origTexture, textureTarget, animation, minInf, maxInf)
         self = setmetatable({},UNInf.ConditionalEffector)

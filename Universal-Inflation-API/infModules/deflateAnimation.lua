@@ -12,10 +12,10 @@ function deflateAnim.patch(core)
     UNInf.deflateAnimation.__index = UNInf.deflateAnimation
     ---Plays a deflation animation whenever you call it, or in the case of BwB deflate via its keybind
     ---@param defAnim Animation [REQUIRED!] What should play when you run this module
-    ---@param chargeAnim Animation|nil [nil] What should play while you are charging this module
-    ---@param chargeTicks number|nil [30] How many ticks will pass before a charged deflation is run
-    ---@param chargedDeflate number|nil [0.25] How much should you deflate by when a fully charged deflation occurs. Percentage
-    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
+    ---@param chargeAnim Animation? [nil] What should play while you are charging this module
+    ---@param chargeTicks number? [30] How many ticks will pass before a charged deflation is run
+    ---@param chargedDeflate number? [0.25] How much should you deflate by when a fully charged deflation occurs. Percentage
+    ---@param conditionals table? [{"any"}] Toggles the module in response to condtionals
     ---@return table self Returns itself for calling and on the fly modification
     function UNInf.deflateAnimation:new(defAnim,chargeAnim,chargeTicks,chargedDeflate,conditionals)
         self = setmetatable({},UNInf.deflateAnimation)
@@ -29,6 +29,8 @@ function deflateAnim.patch(core)
         --log(self.ID,UNInf.pingableDefAnims[self.ID],self.defAnim,UNInf.pingableDefAnims)
 
         self.chargeAnim = chargeAnim
+        table.insert(UNInf.pingableDefAnims,self.chargeAnim)
+        self.chargeID = #UNInf.pingableDefAnims
         self.chargeCount = chargeTicks or 30
         self.chargedDeflate = chargedDeflate or 0.25
         self.conditionals = conditionals or {"any"}
@@ -59,7 +61,13 @@ function deflateAnim.patch(core)
                     end
                 end
                 if(self.chargeAnim ~= nil) then
-                    self.chargeAnim:setPlaying(self.charging)
+                    --self.chargeAnim:setPlaying(self.charging)
+                    if(self.chargeAnim:getPlayState() ~= "PLAYING" and self.charging) then
+                        pings.playDefAnim(self.chargeID)
+                    end
+                    if(self.chargeAnim:getPlayState() ~= "STOPPED" and not self.charging) then
+                        pings.stopDefAnim(self.chargeID)
+                    end
                 end
                 if(self.prvDefMeter > self.defMeter) then
                     if(UNInf.curSystem == "BwBComp") then
@@ -96,7 +104,11 @@ function deflateAnim.patch(core)
         UNInf.pingableDefAnims[animId]:stop()
         UNInf.pingableDefAnims[animId]:play()
     end
+    function UNInf.stopDefAnim(animID)
+        UNInf.pingableDefAnims[animID]:stop()
+    end
     pings.playDefAnim = UNInf.playDefAnim
+    pings.stopDefAnim = UNInf.stopDefAnim
 end
 
 return deflateAnim

@@ -9,15 +9,15 @@ function popping.patch(core)
     ---Handles popping logic, allowing you manipulate what popping looks like
     ---@param scraps table [REQUIRED!] The model parts for your scraps
     ---@param confettiPath string [REQUIRED!] The file path for your confetti instance
-    ---@param count number|nil [32] How many scrap will generate, on average (Influenced by permission level, High caps at 128. Default caps at 32, Low caps at 16)
-    ---@param opacity number|nil [0] How opaque will you be when you pop. 
-    ---@param model ModelPart|nil [nil] What model will have their transparency modified
-    ---@param reformTimer number|nil [20] How many ticks does it take to reform after popping
-    ---@param sound string|table|nil ["entity.generic.explode"] What sounds will play when you pop.
-    ---@param onDeath boolean|nil [true] Should death call popping?
-    ---@param minInf number|nil [0] What is the minimum pressure you must have before you will pop
-    ---@param maxInf number|nil [1] What is the maximum pressure you can have to call this pop
-    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
+    ---@param count number? [32] How many scrap will generate, on average (Influenced by permission level, High caps at 128. Default caps at 32, Low caps at 16)
+    ---@param opacity number? [0] How opaque will you be when you pop. 
+    ---@param model ModelPart? [nil] What model will have their transparency modified
+    ---@param reformTimer number? [20] How many ticks does it take to reform after popping
+    ---@param sound string|table? ["entity.generic.explode"] What sounds will play when you pop.
+    ---@param onDeath boolean? [true] Should death call popping?
+    ---@param minInf number? [0] What is the minimum pressure you must have before you will pop
+    ---@param maxInf number? [1] What is the maximum pressure you can have to call this pop
+    ---@param conditionals table? [{"any"}] Toggles the module in response to condtionals
     ---@return table self Returns itself for on the fly modification
     function UNInf.poppingScraps:new(scraps, confettiPath, count, opacity, model, reformTimer, sound, onDeath, minInf, maxInf, conditionals)
         self = setmetatable({},UNInf.poppingScraps)
@@ -90,7 +90,7 @@ function popping.patch(core)
         self.reformEndClock = 0
         self.passedPrv = false
         function self:tick()
-            --Tick behaivors go here
+            --Tick behaviors go here
             if(not player:isLoaded()) then return end
             if(self.popped) then
                 if(UNInf.clock > self.reformStartClock) then
@@ -124,7 +124,7 @@ function popping.patch(core)
         end
 
         ---Triggers the pop manually. Ignores all conditions
-        ---@param void boolean|nil Determines if popping should fully deflate you
+        ---@param void boolean? Determines if popping should fully deflate you
         function self:pop(void)
             if(not self.popped and player:isLoaded()) then
                 if(self.model ~= nil) then
@@ -168,7 +168,7 @@ function popping.patch(core)
         end
 
         ---Triggers the pop manaully, and acknowledges conditions like max pressure and conditionals
-        ---@param void boolean|nil Determines if popping should fully deflate you
+        ---@param void boolean? Determines if popping should fully deflate you
         function self:safePop(void)
             if(UNInf.checkWhitelist(self.conditionals) and UNInf.checkPressureRange(self.minInf,self.maxInf)) then
                 self:pop(void)

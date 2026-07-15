@@ -85,10 +85,10 @@ function cameras.patch(core)
     UNInf.firstPersonCam.__index = UNInf.firstPersonCam
     ---Sets up a bone to move the first person camera in response to inflation
     ---@param cameraBone ModelPart [REQUIRED!] The bone that the camera actually links to
-    ---@param defOffset Vector3|nil [nil] What the camera returns to when this module is disabled. Nil is the default minecraft perspective
-    ---@param minInf number|nil [0] How inflated you must be for this module to be activated
-    ---@param maxInf number|nil [1] How inflated you can be before this module is ignored
-    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
+    ---@param defOffset Vector3? [nil] What the camera returns to when this module is disabled. Nil is the default minecraft perspective
+    ---@param minInf number? [0] How inflated you must be for this module to be activated
+    ---@param maxInf number? [1] How inflated you can be before this module is ignored
+    ---@param conditionals table? [{"any"}] Toggles the module in response to condtionals
     ---@return table self Returns itself for on the fly modification
     function UNInf.firstPersonCam:new(cameraBone,defOffset,minInf,maxInf,conditionals)
         self = setmetatable({},UNInf.firstPersonCam)
@@ -99,25 +99,49 @@ function cameras.patch(core)
         self.maxInf = maxInf or 1
         self.conditionals = conditionals or {"any"}
 
+        self.parts = {cameraBone}
+        self.allParents = false
+        while self.allParents == false do
+            if( self.parts[#self.parts]:getParent() ~= nil) then
+                table.insert(self.parts, self.parts[#self.parts]:getParent())
+            else
+                self.allParents = true
+            end
+        end
 
+        self.origPos = self.cameraBone:getPivot() / 16
+        self.origRot = self.cameraBone:getRot()
+        --log(self.parts)
+        self.pos = vec(0,0,0)
+        self.rot = vec(0,0,0)
+        
 
         self.active = false
 
-        function self:render(delta)
-            if(UNInf.checkPressureRange(self.minInf,self.maxInf) and UNInf.checkWhitelist(self.conditionals) and renderer:isFirstPerson()) then
+        function self:post_world_render(delta)
+            if(not player:isLoaded()) then return end
+            if(UNInf.checkPressureRange(self.minInf,self.maxInf) and UNInf.checkWhitelist(self.conditionals) and renderer:isFirstPerson() and self.cameraBone:getVisible()) then
                 self.active = true
                 --renderer:setOffsetCameraPivot(self.cameraBone:getPos():add(self.cameraBone:getAnimPos()) / 16)
-                renderer:setOffsetCameraPivot(self.cameraBone:partToWorldMatrix():apply():sub(player:getPos(delta):add(0,player:getEyeHeight(),0)))
+                --renderer:setOffsetCameraPivot(self.cameraBone:partToWorldMatrix():apply():sub(player:getPos(delta):add(0,player:getEyeHeight(),0)))
+                self.pos = vec(0,0,0):add(self.origPos)
+                self.rot = vec(0,0,0):add(self.origRot)
+                for _, p in pairs(self.parts) do
+                    self.pos = self.pos:add(p:getAnimPos() / 16)
+                    self.rot = self.rot:add(p:getAnimRot())
+                end
+                renderer:setOffsetCameraPivot(self.pos:sub(vec(0,player:getEyeHeight(),0)))
+                renderer:setOffsetCameraRot(self.rot)
             else
                 if(self.active) then
                     self.active = false
                     renderer:setOffsetCameraPivot(self.defOffset)
-                    --renderer:setOffsetCameraRot(nil)
+                    renderer:setOffsetCameraRot(nil)
                 end
             end
         end
         
-        table.insert(UNInf.renders,self)
+        table.insert(UNInf.postWorldRenders,self)
         return self
     end
 end

@@ -10,10 +10,10 @@ function modelSwap.patch(core)
     ---Toggle models in response to how inflated you are
     ---@param newModel ModelPart [REQUIRED!] What model becomes visible when the module is activated
     ---@param origModel ModelPart [REQUIRED!] What model becomes hidden when the module is activated
-    ---@param infAnim Animation|nil [nil] Plays when the model is toggled
-    ---@param minInf number|nil [0.01] How inflated you must be for this module to be activated
-    ---@param maxInf number|nil [1] How inflated you can be before this module is ignored
-    ---@param conditionals table|nil [{"any"}] Toggles the module in response to condtionals
+    ---@param infAnim Animation? [nil] Plays when the model is toggled
+    ---@param minInf number? [0.01] How inflated you must be for this module to be activated
+    ---@param maxInf number? [1] How inflated you can be before this module is ignored
+    ---@param conditionals table? [{"any"}] Toggles the module in response to condtionals
     ---@return table self Returns itself for on the fly modification
     function UNInf.modelSwapInflation:new(newModel, origModel, infAnim, minInf, maxInf, conditionals)
         self = setmetatable({},UNInf.modelSwap)
