@@ -123,20 +123,26 @@ function cameras.patch(core)
             if(UNInf.checkPressureRange(self.minInf,self.maxInf) and UNInf.checkWhitelist(self.conditionals) and renderer:isFirstPerson() and self.cameraBone:getVisible()) then
                 self.active = true
                 --renderer:setOffsetCameraPivot(self.cameraBone:getPos():add(self.cameraBone:getAnimPos()) / 16)
-                --renderer:setOffsetCameraPivot(self.cameraBone:partToWorldMatrix():apply():sub(player:getPos(delta):add(0,player:getEyeHeight(),0)))
-                self.pos = vec(0,0,0):add(self.origPos)
+                renderer:setOffsetCameraPivot(self.cameraBone:partToWorldMatrix():apply():sub(player:getPos(delta):add(0,player:getEyeHeight(),0)))
+                --[[self.pos = vec(0,0,0):add(self.origPos)
+                self.prvAngle = vec(0,0,0)
+                self.prvPivot = vec(0,0,0)
                 self.rot = vec(0,0,0):add(self.origRot)
                 for _, p in pairs(self.parts) do
                     self.pos = self.pos:add(p:getAnimPos() / 16)
+                    --self.pos = self.pos:add()
                     self.rot = self.rot:add(p:getAnimRot())
+                    self.prvPivot = p:getPivot()
+                    self.prvAngle = self.rot
                 end
+                log(self.pos)
                 renderer:setOffsetCameraPivot(self.pos:sub(vec(0,player:getEyeHeight(),0)))
-                renderer:setOffsetCameraRot(self.rot)
+                renderer:setOffsetCameraRot(self.rot)]]
             else
                 if(self.active) then
                     self.active = false
                     renderer:setOffsetCameraPivot(self.defOffset)
-                    renderer:setOffsetCameraRot(nil)
+                    --renderer:setOffsetCameraRot(nil)
                 end
             end
         end
