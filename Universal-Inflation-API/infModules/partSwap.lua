@@ -43,10 +43,7 @@ function partSwap.patch(core)
 
         function self:tick()
             --Tick behaivors go here
-            self.active = UNInf.pressure / UNInf.maxPressure >= self.minInf and UNInf.pressure / UNInf.maxPressure <= self.maxInf
-            if(not UNInf.checkWhitelist(self.conditionals)) then
-                self.active = false
-            end
+            self.active = UNInf.checkPressureRange(self.minInf,self.maxInf) and UNInf.checkWhitelist(self.conditionals)
             for _, part in pairs(self.parts) do
                 part:setVisible(self.active)
             end

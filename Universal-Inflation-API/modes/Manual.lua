@@ -1,3 +1,4 @@
+---@class UNInf
 local UNInf
 
 local manual = {}
@@ -7,6 +8,8 @@ manual.name = "Manual"
 manual.allowed = true
 manual.pressure = 0
 manual.manualAllowed = true
+manual.overPressure = 0
+manual.defOverPressureMax = 20
 
 function manual.patch(core)
     UNInf = core
@@ -18,12 +21,26 @@ end
 
 function manual.setPressure(val)
     manual.pressure = math.clamp(val,0,manual.maxInflation)
+    manual.overPressure = 0
     return manual.pressure
 end
 
 function manual.adjustPressure(val)
+    if(manual.pressure + val > manual.maxInflation) then
+        manual.overPressure = math.clamp(manual.overPressure + ((manual.pressure + val) - manual.maxInflation),0,UNInf.maxOverPressure)
+    end
     manual.pressure = math.clamp(manual.pressure + val,0,manual.maxInflation)
+    if(manual.pressure ~= manual.maxInflation and manual.overPressure > 0) then
+        local prvO = manual.overPressure
+        local prvP = manual.pressure
+        manual.pressure = math.clamp(manual.maxInflation + (prvO - (manual.maxInflation - prvP)), 0, manual.maxInflation)
+        manual.overPressure = math.clamp(prvO - (manual.maxInflation - prvP),0, UNInf.maxOverPressure)
+    end
     return manual.pressure
+end
+
+function manual.checkOverPressure()
+    return manual.overPressure
 end
 
 

@@ -7,14 +7,14 @@ function cameras.patch(core)
     UNInf.thirdPersonCam = {}
     UNInf.thirdPersonCam.__index = UNInf.thirdPersonCam
     ---Contols your third person camera based off of your inflation
-    ---@param minPull number|nil [0] How much the camera is pulled back by this module at the minimum inflation
-    ---@param maxPull number|nil [-3] How much the camera is pulled back by this module at the maximum inflation
-    ---@param minLift number|nil [0] How much the camera is raised by this module at the minimum inflation
-    ---@param maxLift number|nil [2] much the camera is raised by this module at the maximum inflation
-    ---@param defOffset Vector3|nil [nil] What the camera returns to when this module is disabled. Nil is the default minecraft perspective
-    ---@param minInf number|nil [0] How inflated you must be for this module to be activated
-    ---@param maxInf number|nil [1] How inflated you can be before this module is ignored
-    ---@param conditionals string|nil [{"any"}] Toggles the module in response to condtionals
+    ---@param minPull number? [0] How much the camera is pulled back by this module at the minimum inflation
+    ---@param maxPull number? [-3] How much the camera is pulled back by this module at the maximum inflation
+    ---@param minLift number? [0] How much the camera is raised by this module at the minimum inflation
+    ---@param maxLift number? [2] much the camera is raised by this module at the maximum inflation
+    ---@param defOffset Vector3? [nil] What the camera returns to when this module is disabled. Nil is the default minecraft perspective
+    ---@param minInf number? [0] How inflated you must be for this module to be activated. Acknowledges overpressure, as a percentage
+    ---@param maxInf number? [2] How inflated you can be before this module is ignored. Acknowledges overpressure, as a percentage
+    ---@param conditionals string? [{"any"}] Toggles the module in response to condtionals
     ---@return table self Returns itself for on the fly modification
     function UNInf.thirdPersonCam:new(minPull, maxPull, minLift, maxLift, defOffset, minInf, maxInf, conditionals)
         self = setmetatable({},UNInf.thirdPersonCam)
@@ -26,7 +26,7 @@ function cameras.patch(core)
         self.maxLift = maxLift or 2
         self.minLift = minLift or 0
         self.minInf = minInf or 0
-        self.maxInf = maxInf or 1
+        self.maxInf = maxInf or 2
         self.conditionals = conditionals or {"any"}
 
         self.defOffset = defOffset
@@ -53,7 +53,7 @@ function cameras.patch(core)
 
         function self:render(delta)
             --Render behaviors go here
-            if(UNInf.pressure / UNInf.maxPressure >= self.minInf and UNInf.pressure / UNInf.maxPressure <= self.maxInf and UNInf.checkWhitelist(self.conditionals) and not renderer:isFirstPerson()) then
+            if((UNInf.pressure + UNInf.overPressure) / UNInf.maxPressure >= self.minInf and (UNInf.pressure + UNInf.overPressure) / UNInf.maxPressure <= self.maxInf and UNInf.checkWhitelist(self.conditionals) and not renderer:isFirstPerson()) then
                 self.active = true
                 --self.progress = (UNInf.pressure - (self.minInf * UNInf.maxPressure)) / ((self.maxInf -self.minInf) * UNInf.maxPressure)
                 if(self.prvInf ~= UNInf.pressure) then
@@ -109,11 +109,11 @@ function cameras.patch(core)
             end
         end
 
-        self.origPos = self.cameraBone:getPivot() / 16
-        self.origRot = self.cameraBone:getRot()
+        --self.origPos = self.cameraBone:getPivot() / 16
+        --self.origRot = self.cameraBone:getRot()
         --log(self.parts)
-        self.pos = vec(0,0,0)
-        self.rot = vec(0,0,0)
+        --self.pos = vec(0,0,0)
+        --self.rot = vec(0,0,0)
         
 
         self.active = false

@@ -163,7 +163,7 @@ function popping.patch(core)
                 end
             end
             if(not player:isLoaded()) then
-                UNInf.annoyLog("You cannot call pop while the player is unloaded!","badpop")
+                UNInf.annoyLog("You cannot call a pop while the player is unloaded!",3,"badpop")
             end
         end
 

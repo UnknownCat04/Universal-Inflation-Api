@@ -1,3 +1,4 @@
+---@class UNInf
 local UNInf
 
 local hunger = {}
@@ -7,6 +8,8 @@ hunger.name = "Saturation"
 hunger.allowed = true
 hunger.pressure = 0
 hunger.manualAllowed = false
+hunger.overPressure = 0
+hunger.defOverPressureMax = 20
 
 function hunger.patch(core)
     UNInf = core
@@ -21,13 +24,17 @@ function hunger.checkPressure()
 end
 
 function hunger.setPressure(val)
-    UNInf.annoyLog("Pressure cannot be set in Saturation mode","satset")
+    UNInf.annoyLog("Pressure cannot be set in Saturation mode",1,"satset")
     return false
 end
 
 function hunger.adjustPressure(val)
-    UNInf.annoyLog("Pressure cannot be adjusted in Saturation mode","satadj")
+    UNInf.annoyLog("Pressure cannot be adjusted in Saturation mode",1,"satadj")
     return false
+end
+
+function hunger.checkOverPressure()
+    return hunger.overPressure
 end
 
 return hunger

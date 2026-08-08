@@ -1,3 +1,4 @@
+---@class UNInf
 local UNInf
 
 local bwbcomp = {}
@@ -6,8 +7,10 @@ bwbcomp.priority = 0
 bwbcomp.maxInflation = 20
 bwbcomp.pressure = 0
 bwbcomp.name = "BwBComp"
-bwbcomp.allowed = client:isModLoaded("better_with_blimps")
+bwbcomp.allowed = client:isModLoaded("better_with_blimps",1)
 bwbcomp.manualAllowed = false
+bwbcomp.overPressure = 0
+bwbcomp.defOverPressureMax = 20
 
 bwbcomp.myConds = {
 "inflating",
@@ -177,16 +180,30 @@ function bwbcomp.checkPressure()
     return bwbcomp.infVal
 end
 
-
+function events.on_play_sound(id, pos)
+  if(not player:isLoaded()) then return end
+  if(id == "better_with_blimps:overinflate") then
+    if((pos - player:getPos()):length() < 1) then
+      bwbcomp.overPressure = math.clamp(bwbcomp.overPressure + 1,0, bwbcomp.defOverPressureMax)
+    end
+  end
+end
 
 function bwbcomp.setPressure(val)
-    UNInf.annoyLog("Pressure cannot be set in bwbcomp mode","bwbset")
+    UNInf.annoyLog("Pressure cannot be set in bwbcomp mode",1,"bwbset")
     return false
 end
 
 function bwbcomp.adjustPressure(val)
-    UNInf.annoyLog("Pressure cannot be adjusted in bwbcomp mode","bwbadj")
+    UNInf.annoyLog("Pressure cannot be adjusted in bwbcomp mode",1,"bwbadj")
     return false
+end
+
+function bwbcomp.checkOverPressure()
+    if(bwbcomp.infVal ~= bwbcomp.maxInflation) then
+        bwbcomp.overPressure = 0
+    end
+    return bwbcomp.overPressure
 end
 
 return bwbcomp
