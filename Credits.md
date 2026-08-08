@@ -1,10 +1,10 @@
-Attributions:
-* [Unknown-Cat](https://bsky.app/profile/calicomeow2.bsky.social) - Primary API Developer
+# <ins>Attributions:</ins>
+* [Unknown-Cat](https://bsky.app/profile/calicomeow2.bsky.social) - Primary Developer
 * [Transience Mythica](https://rentry.org/sempurmythica) - Bug fixing and additional code contributions
 * [SquishySofty](https://mrsirsquishy.notion.site/Squishy-e825d3a72f29453799f6970e7d0dd107) - Wrote SquishyAPI, which was analyzed and provided a baseline for usage
 * [Fernkarry](https://bsky.app/profile/fernkarry.bsky.social) - Primary Better with Blimps developer
 
-Additional special thanks goes to:
+<ins>Additional special thanks goes to:</ins>
 * [Barkeestone](https://bsky.app/profile/barkeestone.bsky.social)
 * [LightwolfGaming](https://x.com/LightAfterDark9)
 * [Nightmare500](https://bsky.app/profile/nightmare509.bsky.social)
