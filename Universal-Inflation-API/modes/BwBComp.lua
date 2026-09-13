@@ -46,85 +46,51 @@ function bwbcomp.patch(core)
     UNInf.conditional["smoke"] = false
 end
 
+-- Establishes the local variables, used to identify what effects should be tracked and how, as well as ensuring specialEfx is present
 local specialEfx = ""
+local bwbefx = {
+    ["effect.better_with_blimps.ballooned"] = "b",
+    ["effect.better_with_blimps.juiced"] = "j",
+    ["effect.better_with_blimps.bubbling"] = "g",
+    ["effect.better_with_blimps.spore_filled"] = "s",
+    ["effect.better_with_blimps.bubble_gum_filled"] = "u",
+    ["effect.better_with_blimps.hot_air"] = "h",
+    ["effect.better_with_blimps.bubble_gum_snared"] = "y",
+    ["effect.better_with_blimps.fizzing"] = "f",
+    ["effect.better_with_blimps.inflating"] = "i",
+    ["effect.better_with_blimps.bloat_rot"] = "r",
+    ["effect.better_with_blimps.waterlogged"] = "w",
+    ["effect.better_with_blimps.smoke_filled"] = "m"
+}
 
---Check conditions are run if the mode has anything in the myConds variable. It is run once per tick, and utilized to update any conditions. It is seperate from the 
+
+--Check conditions are run if the mode has anything in the myConds variable. It is run once per tick, and utilized to update any conditions. It is seperate from checkPressure()
 bwbcomp.prvClock = -1
+bwbcomp.forcePing = 0
+bwbcomp.lastSent = ""
 function bwbcomp.checkConditions()
-    if(UNInf.clock % 5 == 0 and UNInf.clock ~= bwbcomp.prvClock) then
+    --First, check that you're on a 5th tick, and that it is the first time this ahs been called this tick
+    if(UNInf.clock % 5 == 0 and UNInf.clock ~= bwbcomp.prvClock and host:isHost()) then
+        --Set the new values, prvClock is used to prevent repeat calls on the same tick, and specialEfx is used to actually ping the new value
         bwbcomp.prvClock = UNInf.clock
         specialEfx = ""
         for _, effect in pairs(viewer:getStatusEffects()) do
-            if(effect["name"]:find("better_with_blimps") == nil) then
-                goto skip
+            --Then, for every status effect the player has, 
+            if(bwbefx[effect["name"]] ~= nil) then
+                specialEfx = specialEfx..bwbefx[effect["name"]]
             end
-            if(effect["name"] == "effect.better_with_blimps.ballooned") then
-                --Ballooned effect
-                specialEfx = specialEfx.."b"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.juiced") then
-                --Juiced effect
-                specialEfx = specialEfx.."j"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.bubbling") then
-                --Bubbling effect
-                specialEfx = specialEfx.."g"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.spore_filled") then
-                --Spore effect
-                specialEfx = specialEfx.."s"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.bubble_gum_filled") then
-                --Gum effect
-                specialEfx = specialEfx.."u"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.hot_air") then
-                --Hot Air effect
-                specialEfx = specialEfx.."h"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.bubble_gum_snared") then
-                --Hot Air effect
-                specialEfx = specialEfx.."y"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.fizzing") then
-                --Hot Air effect
-                specialEfx = specialEfx.."f"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.inflating") then
-                --Inflating effect
-                specialEfx = specialEfx.."i"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.bloat_rot") then
-                --Bloat Rot effect
-                specialEfx = specialEfx.."r"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.waterlogged") then
-                --Waterlogged effect
-                specialEfx = specialEfx.."w"
-                goto skip
-            end
-            if(effect["name"] == "effect.better_with_blimps.smoke_filled") then
-                --Smoke Filled effect
-                specialEfx = specialEfx.."m"
-                goto skip
-            end
-            ::skip::
         end
-        pings.bwbcompeffects(specialEfx)
+        --Checks to see if the effect list has changed OR if 100 ticks has passed since the last ping, and if either has update the conditional list and set the forced ping to the next 100 ticks
+        if(specialEfx ~= bwbcomp.lastSent or UNInf.clock >= bwbcomp.forcePing) then
+            pings.bwbcompeffects(specialEfx)
+            bwbcomp.lastSent = specialEfx
+            bwbcomp.forcePing = UNInf.clock + 100
+        end
     end
 end
 
 function pings.bwbcompeffects(a)
+    --This reads through the provided string, looking to see if specific characters appear and updating the conditionals based off of which are present
     UNInf.conditional["inflating"] = a:find("i") ~= nil
     UNInf.conditional["ballooned"] = a:find("b") ~= nil
     UNInf.conditional["juiced"] = a:find("j") ~= nil

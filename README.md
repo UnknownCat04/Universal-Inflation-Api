@@ -1,4 +1,4 @@
-# 🎇<ins>Universal inflation API</ins>
+# 🎈<ins>Universal inflation API</ins>
 
 An API for [Figura](https://github.com/FiguraMC/Figura) based player model inflation, intending to simplify making your avatars compatible with inflation / growth mods such as:
 
@@ -18,3 +18,13 @@ local UNInf = require("Universal-Inflation-API.UNInf")
 Once this is done, the API will be able to be called from within that script, and you can call new modules in to customize your inflation appearance. Refer to the [wiki](https://github.com/UnknownCat04/Universal-Inflation-Api/wiki) for more information there!
 
 Attributions can be located [here](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main/Credits.md)
+
+---
+
+The Api should be mostly functional on its own, however certain modules such as the popping module also require additional libraries to function. You can locate those [here]()
+
+---
+
+NOTICE FOR USAGE IN MULTIPLAYER!
+
+The public figura backend has a no NSFW avatars rule. As such it is not recommend to upload avatars that utilize this api to the public backend. However, you can utilize either FSB, or swap to a backend that is NSFW friendly. Midy provides a backend, which can be located [here!]()

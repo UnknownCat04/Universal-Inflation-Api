@@ -23,6 +23,9 @@ if(auto.here["animbloat"]) then
             if(string.sub(y:getName(), 1, 5) == "bloat") then
                 UNInf.animbloat:new(y)
             end
+            if(string.sub(y:getName(), 1, 9) == "overbloat") then
+                UNInf.animoverbloat:new(y)
+            end
         end
     end
     auto.modelName = nil

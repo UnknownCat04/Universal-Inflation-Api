@@ -53,6 +53,7 @@ function cameras.patch(core)
 
         function self:render(delta)
             --Render behaviors go here
+            if(not host:isHost()) then return end
             if((UNInf.pressure + UNInf.overPressure) / UNInf.maxPressure >= self.minInf and (UNInf.pressure + UNInf.overPressure) / UNInf.maxPressure <= self.maxInf and UNInf.checkWhitelist(self.conditionals) and not renderer:isFirstPerson()) then
                 self.active = true
                 --self.progress = (UNInf.pressure - (self.minInf * UNInf.maxPressure)) / ((self.maxInf -self.minInf) * UNInf.maxPressure)
@@ -99,7 +100,7 @@ function cameras.patch(core)
         self.maxInf = maxInf or 1
         self.conditionals = conditionals or {"any"}
 
-        self.parts = {cameraBone}
+        --[[self.parts = {cameraBone}
         self.allParents = false
         while self.allParents == false do
             if( self.parts[#self.parts]:getParent() ~= nil) then
@@ -107,7 +108,7 @@ function cameras.patch(core)
             else
                 self.allParents = true
             end
-        end
+        end]]
 
         --self.origPos = self.cameraBone:getPivot() / 16
         --self.origRot = self.cameraBone:getRot()
@@ -117,9 +118,8 @@ function cameras.patch(core)
         
 
         self.active = false
-
         function self:post_world_render(delta)
-            if(not player:isLoaded()) then return end
+            if(not player:isLoaded() or not host:isHost()) then return end
             if(UNInf.checkPressureRange(self.minInf,self.maxInf) and UNInf.checkWhitelist(self.conditionals) and renderer:isFirstPerson() and self.cameraBone:getVisible()) then
                 self.active = true
                 --renderer:setOffsetCameraPivot(self.cameraBone:getPos():add(self.cameraBone:getAnimPos()) / 16)

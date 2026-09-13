@@ -6,9 +6,15 @@ function popping.patch(core)
     UNInf = core
     UNInf.poppingScraps = {}
     UNInf.poppingScraps.__index = UNInf.poppingScraps
+
+    UNInf.deadPops = {}
+
+    for _, path in ipairs(listFiles("/", true)) do
+        if string.find(path, "confetti") then UNInf.confetti = require(path) break end
+    end
+
     ---Handles popping logic, allowing you manipulate what popping looks like
     ---@param scraps table [REQUIRED!] The model parts for your scraps
-    ---@param confettiPath string [REQUIRED!] The file path for your confetti instance
     ---@param count number? [32] How many scrap will generate, on average (Influenced by permission level, High caps at 128. Default caps at 32, Low caps at 16)
     ---@param opacity number? [0] How opaque will you be when you pop. 
     ---@param model ModelPart? [nil] What model will have their transparency modified
@@ -19,13 +25,12 @@ function popping.patch(core)
     ---@param maxInf number? [1] What is the maximum pressure you can have to call this pop
     ---@param conditionals table? [{"any"}] Toggles the module in response to condtionals
     ---@return table self Returns itself for on the fly modification
-    function UNInf.poppingScraps:new(scraps, confettiPath, count, opacity, model, reformTimer, sound, onDeath, minInf, maxInf, conditionals)
+    function UNInf.poppingScraps:new(scraps, count, opacity, model, reformTimer, sound, onDeath, minInf, maxInf, conditionals)
         self = setmetatable({},UNInf.poppingScraps)
         
         --Set all self variables here
 
         self.scraps = {}
-        self.confetti = require(confettiPath)
         self.count = count or 32
         self.opacity = opacity or 0
         self.sound = sound  or {"entity.generic.explode"}
@@ -40,7 +45,10 @@ function popping.patch(core)
         self.conditionals = conditionals or {"any"}
         
         self.playSound = true
-
+        if(UNInf.confetti == nil) then
+            
+        end
+        assert(UNInf.confetti, "Confetti was not located in your model! Please add it before using this function")
         for _, part in pairs(scraps) do
             assert(type(part) == "ModelPart", "One or more of your scrap entries are not a valid model part. Please check the file path given")
         end
@@ -54,7 +62,7 @@ function popping.patch(core)
         assert(type(self.model) == "ModelPart" or type(self.model) == "nil")
 
         for i,v in pairs(scraps) do
-            self.confetti.registerMesh(v:getName(),v)
+            UNInf.confetti.registerMesh(v:getName(),v)
             self.scraps[i] = v:getName()
         end
 
@@ -80,7 +88,7 @@ function popping.patch(core)
                     particle.options["friction"] = 0
                 end
             end
-            self.confetti.defaultTicker(particle)
+            UNInf.confetti.defaultTicker(particle)
         end
 
         self.popped = false
@@ -95,14 +103,6 @@ function popping.patch(core)
             if(self.popped) then
                 if(UNInf.clock > self.reformStartClock) then
                     self.reforming = true
-                end
-            else
-                if(self.onDeath) then
-                    if(player:isAlive() == false and UNInf.checkWhitelist(self.conditionals) and self.passedPrv) then
-                        self:pop()
-                        self.dead = true
-                    end
-                    self.passedPrv = UNInf.checkPressureRange(self.minInf,self.maxInf)
                 end
             end
             if(self.dead and player:isAlive()) then
@@ -131,13 +131,17 @@ function popping.patch(core)
                     self.model:setOpacity(self.opacity)
                     self.reformStartClock = UNInf.clock + math.ceil(self.reformTimer / 2)
                     self.reformEndClock = UNInf.clock + self.reformTimer
+                    if(self.dead) then
+                        self.reformStartClock = UNInf.clock + 10000000000000000000
+                        self.reformEndClock = UNInf.clock + 1000000000000000000000
+                    end
                     self.popped = true
                 end
 
                 for i = 1, math.round(math.random(self.count * 0.75, self.count * 1.25)), 1 do
                     --log(i,scrap)
 
-                    self.confetti.newParticle(
+                    UNInf.confetti.newParticle(
                         self.scraps[math.random(1,#self.scraps)],
                         player:getPos():add(vec(math.random(-100, 100) / 75, math.random(0, 200) / 100, math.random(-100, 100) / 75)),
                         vec((math.random(-100, 100) / 100)  * 1.5, (math.random(-25, 100) / 100) * 1.5, (math.random(-100, 100) / 100)  * 1.5),
@@ -178,12 +182,26 @@ function popping.patch(core)
         function self.respawned()
             self.reformStartClock = 0
             self.reformEndClock = 0
+            self.dead = false
         end
 
         -- Insert it into UNInf's groups to run in the proper events. Ticks for tick only, Renders for render only, and hybrid for both
+        if(self.onDeath) then
+            table.insert(UNInf.deadPops,self)
+        end
         table.insert(UNInf.hybrid,self)
         return self
     end
+
+    events.ON_PLAY_SOUND:register(function(id, pos, vol, pitch, loop, category)
+        if(id == "minecraft:entity.player.death" and (pos - player:getPos()):length() < 1 and category == "PLAYERS")then
+            for _, p in pairs(UNInf.deadPops) do
+                p.dead = true
+                p:safePop(true)
+            end
+        end
+    end)
+
 end
 
 return popping

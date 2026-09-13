@@ -83,6 +83,28 @@ function UNInf.setMode(mode)
         UNInf.annoyLog("The mode you are attempting to swap to is currently disabled. Please check what the mode requires before trying again",2,"invmode")
     end
 end
+
+local pressureChangeEvents = {}
+---Sets the function provided to occure whenever pressure is changed
+---@param func function The function that occurs whenever a pressure change occurs. The function supports delta, deltaP, total, and totalP. Delta is the change, total is the end result. P means it is the percentage change
+function UNInf.setOnPressureChange(func)
+    table.insert(pressureChangeEvents,func)
+end
+
+local curPressure = 0
+local function onPressureChange()
+    local delta = UNInf.pressure - curPressure
+    local deltaP = delta / UNInf.maxPressure
+    local total = UNInf.pressure
+    local totalP = UNInf.pressure / UNInf.maxPressure
+    if (delta == 0) then return end
+    for _, func in pairs(pressureChangeEvents) do
+        func(delta,deltaP,total,totalP)
+    end
+
+    curPressure = total
+end
+
 ---Get the current pressure you're at
 ---@return number
 function UNInf.getPressure()
@@ -100,19 +122,31 @@ end
 ---@param val integer The desired pressure given
 ---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.setPressure(val)
-    return UNInf.infModes[UNInf.curSystem].setPressure(val)
+    if(UNInf.infModes[UNInf.curSystem].setPressure(val) ~= false) then
+        onPressureChange()
+        return UNInf.getPressure()
+    end
+    return false
 end
 ---Raise the current pressure by the provided value, if allowed
 ---@param val integer The desired inflation given
 ---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.inflate(val)
-    return UNInf.infModes[UNInf.curSystem].adjustPressure(val)
+    if(UNInf.infModes[UNInf.curSystem].setPressure(val) ~= false) then
+        onPressureChange()
+        return UNInf.getPressure()
+    end
+    return false
 end
 ---Lower the current pressure by the provided value, if allowed
 ---@param val integer The desired deflation given
 ---@return number|false "What is the new current pressure score. Returns false if the process had failed"
 function UNInf.deflate(val)
-    return UNInf.infModes[UNInf.curSystem].adjustPressure(-val)
+    if(UNInf.infModes[UNInf.curSystem].setPressure(val) ~= false) then
+        onPressureChange()
+        return UNInf.getPressure()
+    end
+    return false
 end
 --Set the maximum overpressure your model can recoginize. This overides all default values. Nil reinstates the default
 ---@param val number? The new overpressure maximum
@@ -122,7 +156,7 @@ end
 
 local passed = false
 local checks = 0
----Checks if the passed table string passes the white list
+---Checks if the passed table of conditionals passes the white list
 ---@param wlist table The whitelist you wish to test. Should be a table of strings
 ---@return boolean result The test result
 function UNInf.checkWhitelist(wlist)
@@ -206,8 +240,12 @@ function UNInf.annoyLog(msg,type,id)
 end
 -- This is where the events are run. Ticks are run in events.tick, Renders are run in events.render, and hybrid are run in both
 
+
 function events.tick()
     UNInf.pressure = UNInf.getPressure()
+    if(UNInf.pressure ~= curPressure) then
+        onPressureChange()
+    end
     --log(UNInf.pressure)
     for _, v in pairs(UNInf.ticks) do
         v:tick()
@@ -231,6 +269,40 @@ function events.post_world_render(delta)
     for _, v in pairs(UNInf.postWorldRenders) do
         v:post_world_render(delta)
     end
+end
+
+local targetedMode = 1
+local namesList = {}
+for i, _ in pairs(UNInf.infModes) do
+    table.insert(namesList,i)
+    if(i == UNInf.curSystem) then
+        targetedMode = #namesList
+    end
+end
+
+function updateTarget(scroll)
+    targetedMode = (((targetedMode + scroll) - 1) % #namesList) + 1
+    updateModeSwap()
+end
+
+function actionModeSet()
+    UNInf.setMode(namesList[targetedMode])
+    UNInf.annoyLog("Mode has been set to: "..UNInf.curSystem,1)
+end
+pings.actionModeSet = actionModeSet
+
+local modeSwapperAction = action_wheel:newAction()
+    :title("Change Mode to: "..namesList[targetedMode])
+    :item("minecraft:apple")
+    :onScroll(updateTarget)
+    :onLeftClick(pings.actionModeSet)
+
+function updateModeSwap()
+    modeSwapperAction:title("Change Mode to: "..namesList[targetedMode])
+end
+
+function UNInf.modeToggleAction()
+    return modeSwapperAction
 end
 
 return UNInf
