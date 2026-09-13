@@ -21,10 +21,10 @@ Attributions can be located [here](https://github.com/UnknownCat04/Universal-Inf
 
 ---
 
-The Api should be mostly functional on its own, however certain modules such as the popping module also require additional libraries to function. You can locate those [here]()
+The Api should be mostly functional on its own, however certain modules such as the popping module also require additional libraries to function. You can locate those [here](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main/Links%20to%20other%20resources.md)
 
 ---
 
 NOTICE FOR USAGE IN MULTIPLAYER!
 
-The public figura backend has a no NSFW avatars rule. As such it is not recommend to upload avatars that utilize this api to the public backend. However, you can utilize either FSB, or swap to a backend that is NSFW friendly. Midy provides a backend, which can be located [here!]()
+The public figura backend has a no NSFW avatars rule. As such it is not recommend to upload avatars that utilize this api to the public backend. However, you can utilize either FSB, or swap to a backend that is NSFW friendly. Midy provides a backend, which can be located [here!](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main/Blimp%20Friendly%20Figura%20Cloud.md)
