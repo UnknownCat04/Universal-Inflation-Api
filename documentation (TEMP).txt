@@ -108,9 +108,9 @@ local defAnim = UNInf.deflateAnimation:new(
     nil  -- [{"any"}] Condtionals. Toggles the module in response to condtionals
 )
 
-defAnim:call(val) -- Val determines how much you deflate by if this succefully deflates you. Does not work if manual deflation calls aren't allowed
+defAnim:call() -- Calls the animation, if the confitions for the animation to play are present
 
-defAnim:charge(val) -- Starts a charge if true is passed, or no valid value is given. False ends the activae charge and starts the deflation animation
+defAnim:forcedCall() -- Forcibly calls the animation, regardless of conditions
 
 local scraps = {
 	--Input scraps here
