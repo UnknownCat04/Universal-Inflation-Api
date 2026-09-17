@@ -29,6 +29,10 @@ UNInf.setOnPressureChange(function(delta,deltaP,total,totalP)
     --log(delta,deltaP,total,totalP)
 end)
 
+UNInf.pushAutoStart(function()
+	--Runs on the start of the API, after everything has been loaded. Used to automatically create a module in response to certain conditions, such as a specific model part or animation
+end)
+
 local infanim = UNInf.animbloat:new(
 animations.model.bloat, -- [!] Bloat animation. What plays to represent your inflation progress
 nil, -- [7] Ticks, how many ticks does it take for your inflation to fully update
@@ -100,7 +104,7 @@ local defAnim = UNInf.deflateAnimation:new(
     nil, -- [!] Deflate Animation. What should play when you run this module
     nil, -- [nil] Charge Animation. What should play while you are charging this module
     nil, -- [30] Charge ticks. How many ticks will pass before a charged deflation is run
-    nil, -- [false] Charged Only. Should this animation run only when the deflation animation is charged?
+    nil, -- ["any"] Charged Only. Should this animation only play if you were charging? Or only if you don't. The accepted values are "uncharged", "charged", and "any"
     nil  -- [{"any"}] Condtionals. Toggles the module in response to condtionals
 )
 
