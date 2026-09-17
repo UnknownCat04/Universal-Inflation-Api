@@ -21,7 +21,7 @@ Attributions can be located [here](https://github.com/UnknownCat04/Universal-Inf
 
 ---
 
-The Api should be mostly functional on its own, however certain modules such as the popping module also require additional libraries to function. You can locate those [here](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main/Links%20to%20other%20resources.md)
+The Api should be mostly functional on its own, however certain modules such as the popping module also require additional libraries to function. Additional, some libriaries can assist in the function of your model. You can locate both of those kinds [here](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main/Links%20to%20other%20resources.md)
 
 ---
 
