@@ -1,4 +1,3 @@
-
 Midy has been very kind to provide her own server for us to utilize for our blimpy models, even ones that include nsfw content. This allows us to host our inflatable models for others to see, without the risk of being banned from the public backend. The ip for this server is:
 
 ```

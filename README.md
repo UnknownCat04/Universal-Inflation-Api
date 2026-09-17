@@ -3,8 +3,8 @@
 An API for [Figura](https://github.com/FiguraMC/Figura) based player model inflation, intending to simplify making your avatars compatible with inflation / growth mods such as:
 
 - Better with Blimps 🎈
-- Mobs are Balloons 📍
-- Just Another Bite 🍰
+- Mobs are Balloons 📍 (Coming Soon)
+- Just Another Bite 🍰 (Coming Soon)
 
 Additionally it can be configured to have more modes, allowing you to customize when and how your avatar inflates, and even set up ways to blow up in vanilla Minecraft. It also allows your model to compatible with multiple mods at the same time, minimizing how much version juggling and coding you have to do.
 
@@ -27,4 +27,4 @@ The Api should be mostly functional on its own, however certain modules such as 
 
 NOTICE FOR USAGE IN MULTIPLAYER!
 
-The public figura backend has a no NSFW avatars rule. As such it is not recommend to upload avatars that utilize this api to the public backend. However, you can utilize either FSB, or swap to a backend that is NSFW friendly. Midy provides a backend, which can be located [here!](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main/Blimp%20Friendly%20Figura%20Cloud.md)
+The public Figura backend has a no NSFW avatars rule. As such it is not recommend to upload avatars that utilize this API to the public backend, since they may be flagged as NSFW and lead to a backend ban. However, you can utilize either FSB, or swap to a another backend that is NSFW friendly. Midy provides a backend, which can be located [here!](https://github.com/UnknownCat04/Universal-Inflation-Api/blob/main/Blimp%20Friendly%20Figura%20Cloud.md)

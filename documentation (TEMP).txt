@@ -1,0 +1,135 @@
+UNInf.setMode(mode) -- Sets your mode to the input mode assuming it is available
+
+UNInf.getPressure() -- Returns the mode's current pressure
+
+UNInf.setPressure(val) -- Allows you to set the current pressure, assuming the mode allows it
+
+UNInf.inflate(val) -- Increases your pressure by the input value, assuming the mode allows it
+
+UNInf.deflate(val) -- Decreases your pressure by the input value, assuming the mode allows it
+
+UNInf.checkWhitelist(wlist) -- Checks the provided white list to see if your conditionals match what is inside. Requires a table. Anything with a - infront of it will be considered blacklisted and fail the check if the conditional is true
+
+UNInf.checkPressureRange(minInf, maxInf) -- Checks to see if your pressure is between the two given percentages, returning true or false
+
+UNInf.annoyLog(msg, class, id) -- Sends msg as a warning to the user's chat. ID is used to ensure it is only sent once if the user keeps activating the send condition. (Can be disabled by setting UNInf.reportLogs to false)
+
+UNInf.clock -- Value ticks up once per tick, and can be utilized for anything related to timing. Good with % (modulus)
+
+UNInf.insertToGroups(module) -- Handles table insertion automatically. What table(s) the module is inserted into is based off of the name of the event you have added
+
+UNInf.ticks -- Table for all tick only modules events
+
+UNInf.renders -- Table for all render only modules events
+
+UNInf.post_world_renders -- Table for all post world render modules events
+
+UNInf.setOnPressureChange(function(delta,deltaP,total,totalP) 
+	--Runs once whenever the pressure changes. Delta is the change, total is the final result. P indicates percentage 
+    --log(delta,deltaP,total,totalP)
+end)
+
+UNInf.pushAutoStart(function()
+	--Runs on the start of the API, after everything has been loaded. Used to automatically create a module in response to certain conditions, such as a specific model part or animation
+end)
+
+local infanim = UNInf.animbloat:new(
+animations.model.bloat, -- [!] Bloat animation. What plays to represent your inflation progress
+nil, -- [7] Ticks, how many ticks does it take for your inflation to fully update
+nil -- [{"any"}] Conditionals. The conditionals for this module
+)
+
+infanim:hotSwap(new) -- Swaps the inflation animation the above module is using to a new one
+
+local overinfanim = UNInf.animoverbloat(
+animations.model.overbloat, -- [!] Bloat animation. What plays to represent your inflation progress above the normal maximum
+nil, -- [7] Ticks, how many ticks does it take for your inflation to fully update
+nil -- [{"any"}] Conditionals. The conditionals for this module
+)
+overinfanim:hotSwap(new) -- Swaps the inflation animation the above module is using to a new one
+
+local partsList = {
+    --Model parts go here
+
+}
+UNInf.modelpartInflation:new(
+    partsList, -- [!] inflated parts. Must be filled by a table (It's handled up above)
+    nil, -- [nil] Activation animation. Plays when the parts are toggled on
+    nil, -- [0.01] Minimum inflation. The percentage of inflation that toggles these parts on 
+    nil, -- [1] Maximum inflation. The percentage of inflation you can reach before these parts are toggled off
+    nil  -- [{"any"}] Conditionals. The conditionals for this module
+)
+
+UNInf.modelSwapInflation:new(
+    nil, -- [!] New blimp body. What model becomes visible when the module is activated 
+    nil, -- [!] Original body. What model becomes hidden when the module is activated
+    nil, -- [nil] Inflation animation. Plays when the model is toggled
+    nil, -- [0.01] Minimum inflation. The percentage of inflation that toggles the models 
+    nil, -- [1] Maximum inflation. The percentage of inflation you can reach before the models are toggled again
+    nil -- [{"any"}] Conditionals. The conditionals for this module
+)
+
+UNInf.thirdPersonCam:new(
+    nil, -- [0] Minimum pull. How much the camera is pulled back by this module at the minimum inflation
+    nil, -- [-3] Maximum pull. How much the camera is pulled back by this module at the maximum inflation
+    nil, -- [0] Minimum lift. How much the camera is raised by this module at the minimum inflation
+    nil, -- [2] Maximum lift. much the camera is raised by this module at the maximum inflation
+    nil, -- [nil] Default offset. What the camera returns to when this module is disabled. Nil is the default minecraft perspective
+    nil, -- [0] Minimum inflation. How inflated you must be for this module to be activated
+    nil, -- [1] Maximum inflation. How inflated you can be before this module is ignored
+    nil  -- [{"any"}] Condtionals. Toggles the module in response to condtionals
+)
+
+UNInf.firstPersonCam:new(
+    models.model.root.cameraBone, -- [!] Camera bone. What is the actual model part that the first person camera will follow
+    nil, -- [nil] Default offset. What the camera returns to when this module is disabled. Nil is the default minecraft perspective
+    nil, -- [0] Minimum inflation. How inflated you must be for this module to be activated
+    nil, -- [1] Maximum inflation. How inflated you can be before this module is ignored
+    nil  -- [{"any"}] Condtionals. Toggles the module in response to condtionals
+)
+
+UNInf.ConditionalEffector:new(
+    "any", -- [!] Conditional. What conditional actually triggers this module
+    nil, -- [nil] Minimum Color. What color is initially applied when the effector is activated
+    nil, -- [nil] Maximum color. What color is applied when the effector is at max inflation
+    nil, -- [nil] New Texture. What texture is applied when the effector is activated
+    nil, -- [nil] Original Texture. What texture is applied when the effector is deactivated
+    nil, -- [nil] Texture Target. What model parts are the textures applied to
+    nil, -- [nil] Animation. What animation is played when this module is activated
+    nil, -- [0] Minimum inflation. What percentage of inflation is required for this module to activate
+    nil  -- [1] Maximum inflation. What percentage of inflation before the module is deactivated
+)
+
+local defAnim = UNInf.deflateAnimation:new(
+    nil, -- [!] Deflate Animation. What should play when you run this module
+    nil, -- [nil] Charge Animation. What should play while you are charging this module
+    nil, -- [30] Charge ticks. How many ticks will pass before a charged deflation is run
+    nil, -- ["any"] Charged Only. Should this animation only play if you were charging? Or only if you don't. The accepted values are "uncharged", "charged", and "any"
+    nil  -- [{"any"}] Condtionals. Toggles the module in response to condtionals
+)
+
+defAnim:call(val) -- Val determines how much you deflate by if this succefully deflates you. Does not work if manual deflation calls aren't allowed
+
+defAnim:charge(val) -- Starts a charge if true is passed, or no valid value is given. False ends the activae charge and starts the deflation animation
+
+local scraps = {
+	--Input scraps here
+}
+local popping = UNInf.poppingScraps:new(
+scraps, -- [!] The model parts for your scraps
+nil, -- [32] How many scrap will generate, on average (Influenced by permission level, High caps at 128. Default caps at 32, Low caps at 16)
+nil, -- [0] How opaque will you be when you pop. 
+nil, -- [nil] What model will have their transparency modified 
+nil, -- [20] How many ticks does it take to reform after popping
+nil, -- ["entity.generic.explode"] What sounds will play when you pop.
+nil, -- [true] Should death call popping?
+nil, -- [0] What is the minimum pressure you must have before you will pop
+nil, -- [1] What is the maximum pressure you can have to call this pop
+nil  -- [{"any"}] Toggles the module in response to condtionals
+)
+
+popping:pop(void) -- Calls the pop behaviour regardless of input conditons. Void determines if you should fully deflate if the mode allows manual deflation
+
+popping:safePop(void) -- Calls the pop behaviour ONLY if you meet the input conditions. Otherwise it does nothing. Void determines if you should be fully deflated when possible
+
+popping.playSound -- The variable used to determine if the sounds are played when you pop. Set to true to have the module play a boom, set to false to prevent this. Useful if the mod you're using has a boom sound of its own
