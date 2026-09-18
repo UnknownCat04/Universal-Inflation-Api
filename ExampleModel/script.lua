@@ -14,16 +14,7 @@ vanilla_model.ELYTRA:setVisible(false)
 
 local UNInf = require("Universal-Inflation-API.UNInf")
 
---log(UNInf, UNInf.infSystems, UNInf.curSystem, UNInf.infSystems[UNInf.curSystem])
 
---
-
-
---UNInf.animbloat:new(
---    animations.model.bloat, -- [!] Bloat animation. What plays to represent your inflation progress
---    nil, -- [7] Timer, How many ticks does it tack for the inflation animation to fully update (inflation is still tracked to the tick)
---    nil  -- [{"any"}] Conditionals. The conditionals for this module
---)
 
 
 local partsList = {
@@ -72,27 +63,12 @@ UNInf.ConditionalEffector:new(
     nil  -- [1] Maximum inflation. What percentage of inflation before the module is deactivated
 )
 
---[[UNInf.setMode("Manual")
---log(UNInf.pressure)
---
-
-function events.tick() 
-    if(UNInf.clock % 20 == 0) then
-        log(UNInf.inflate(15))
-    end
-    if(UNInf.clock % 20 == 10) then
-        log(UNInf.deflate(10))
-    end
-end]]
 
 
---local defAnim = UNInf.deflateAnimation:new(
---    animations.model["deflate/-sporebloat"], -- [!] Deflate Animation. What should play when you run this module
---    nil, -- [nil] Charge Animation. What should play while you are charging this module
---    nil, -- [30] Charge ticks. How many ticks will pass before a charged deflation is run
---    nil, -- [0.25] Charged deflate. How much should you deflate by when a fully charged deflation occurs 
---    nil  -- [{"any"}] Condtionals. Toggles the module in response to condtionals
---)
+
+
+
+
 
 local scraps = {
 models.scraps.Scrap1,
