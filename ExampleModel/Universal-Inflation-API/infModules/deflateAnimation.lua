@@ -35,9 +35,10 @@ function deflateAnim.patch(core)
         self.chargeOnly = chargeOnly or "any"
         self.conditionals = conditionals or {"any"}
 
+        self.forceCharge = self.chargeOnly == "charged"
+        self.forceUncharge = self.chargeOnly == "uncharged"
         self.holdTicks = 0
         self.defMeter = 0
-        self.prvDefMeter = 0
         self.charging = false
         function self:tick()
             --Tick behaivors go here
@@ -48,32 +49,32 @@ function deflateAnim.patch(core)
                     else
                         self.defMeter = 0
                     end
-                    if (self.defMeter > 0) then
+                    if (self.defMeter > 5) then
                         self.charging = true
                     end
                     if(self.charging) then
-                        if(self.holdTicks > 5 and self.defMeter <= 0) then
+                        if(self.holdTicks > 5 and self.defMeter <= 5) then
                             self.charging = false
                             self.holdTicks = 0
                         end
-                        self.holdTicks = self.holdTicks + 1
+                        if(self.defMeter <= 5) then
+                            self.holdTicks = self.holdTicks + 1
+                        end
                     end
                 else
                     self.charging = UNInf.chargingDef
                 end
-                if(self.chargeAnim ~= nil) then
+                if(self.chargeAnim ~= nil and not self.forceUncharge) then
                     --self.chargeAnim:setPlaying(self.charging)
-                    if((not self.chargeAnim:isPlaying() or not self.chargeAnim:isPaused()) and self.charging) then
+                    if((not self.chargeAnim:isPlaying() and not self.chargeAnim:isPaused() and not self.chargeAnim:isHolding()) and self.charging) then
                         pings.playDefAnim(self.chargeID)
                     end
                     if(self.chargeAnim:getPlayState() ~= "STOPPED" and not self.charging) then
                         pings.stopDefAnim(self.chargeID)
                     end
                 end
-                self.prvDefMeter = self.defMeter
             else
                 self.defMeter = 0
-                self.prvDefMeter = 0
             end
         end
 
@@ -85,7 +86,7 @@ function deflateAnim.patch(core)
         end
 
         function self:call()
-            if(UNInf.checkWhitelist(self.conditionals) and ((UNInf.chargingDef and self.chargeOnly == "charged") or self.chargeOnly == "any" or (not UNInf.chargingDef and self.chargeOnly == "uncharged"))) then
+            if(UNInf.checkWhitelist(self.conditionals) and ((self.forceCharge and self.charging) or (self.forceUncharge and not self.charging) or (not self.forceCharge and not self.forceUncharge))) then
                 pings.playDefAnim(self.ID)
                 if(self.chargeAnim ~= nil) then
                     pings.stopDefAnim(self.chargeID)
