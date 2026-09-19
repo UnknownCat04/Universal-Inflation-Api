@@ -44,16 +44,13 @@ function CondEffector.patch(core)
             assert(type(self.minColor) == "Vector3", "Your minimum color is not a valid Vector3. Please input a Vector3, with the colors being in R G B order!")
             assert(type(self.maxColor) == "Vector3", "Your minimum color is not a valid Vector3. Please input a Vector3, with the colors being in R G B order!")
         end
-        if(self.newTexture ~= nil) then
-            assert()
-        end
         if(self.textureTarget ~= nil) then
             if(type(self.textureTarget) == "ModelPart") then
                 self.textureTarget = {self.textureTarget}
             end
             assert(type(self.textureTarget) == "table", "Your texture target is not set properly. Please set it to a model part, or a table of model parts")
-            assert(type(self.origTexture) == "Texture", "Your original texture is not set properly. It must be a texture you wish to use when you're not under the tracked effect")
-            assert(type(self.newTexture) == "Texture", "Your new texture is not set properly. It must be a texture you wish to use when you're under the tracked effect")
+            assert(type(self.origTexture) == "Texture", "Your original texture is not set properly or not filled in. It must be a texture you wish to use when you're not under the tracked effect")
+            assert(type(self.newTexture) == "Texture", "Your new texture is not set properly or not filled in. It must be a texture you wish to use when you're under the tracked effect")
         end
         if(self.animation ~= nil) then
             assert(type(self.animation) == "Animation", "Your inflation animation is not set properly. Please set it to the animation path in your model")
