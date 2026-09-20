@@ -41,7 +41,7 @@ nil -- [{"any"}] Conditionals. The conditionals for this module
 
 infanim:hotSwap(new) -- Swaps the inflation animation the above module is using to a new one
 
-local overinfanim = UNInf.animoverbloat(
+local overinfanim = UNInf.animoverbloat:new(
 animations.model.overbloat, -- [!] Bloat animation. What plays to represent your inflation progress above the normal maximum
 nil, -- [7] Ticks, how many ticks does it take for your inflation to fully update
 nil -- [{"any"}] Conditionals. The conditionals for this module
